@@ -1,10 +1,33 @@
 <template>
+<div>
+    fqfdqs
+    {{s}}
+</div>
     <div v-if="openedElement">
         <div class="alert alert-danger" v-if="error">{{error}}</div>
-        <h1>{{openedElement.name}}</h1>
-        <p>{{openedElement.description}}</p>
+        <h1>{{openedElement.cache_nom}}</h1>
+        <p>{{openedElement.oPersonne.prenom}}</p>
         <div>{{openedElement.id}}</div>
         <pre>{{openedElement}}</pre>
+        <div class="container">
+            <div class="card shadow-sm mt-4">
+                <div class=" card-body">
+                    <h2 class="mb-3">Nouvelle demande d'absence</h2>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="dd" class="form-label col">Définissez votre période:</label>
+                            <div>
+                                <span></span>
+                            </div>
+                            <input type="date" class="form-control" id="dd">
+                        </div>
+                    </div>
+                    <div class="col-3 m-2">
+                        <input class="form-control btn btn-primary" type="submit" value="Créez">
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <router-view></router-view>
     </div>

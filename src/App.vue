@@ -18,7 +18,7 @@
 				<router-link :to="'/element/'+openedElement.id+'/properties'" custom v-slot="{ navigate, href }">
 					<a class="btn btn-dark me-2" :href="href" @click="navigate">
 						<i class="bi bi-file-earmark me-1"></i>
-						{{openedElement.name}}
+						{{openedElement.cache_nom}}
 					</a>
 				</router-link>
 
@@ -47,7 +47,7 @@
 
 		<template v-slot:list>
 			<AppMenu>
-				<AppMenuItem :href="'/element/'+el.id" icon="bi bi-file-earmark" v-for="el in elements" :key="el.id">{{el.name}}</AppMenuItem>
+				<AppMenuItem :href="'/absence/'+el.id" icon="bi bi-file-earmark" v-for="el in elements" :key="el.id">{{el.cache_nom}}</AppMenuItem>
 			</AppMenu>
 		</template>
 
