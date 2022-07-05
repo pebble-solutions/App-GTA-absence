@@ -2,46 +2,56 @@
     <div v-if="openedElement">
         <div class="alert alert-danger" v-if="error">{{error}}</div>
         <div class="container">
-        <h1 class="d-flex flex-row align-items-baseline justify-content-between my-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
+        <h1 class="d-flex flex-row align-items-baseline justify-content-between py-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
 
             <div class="row">
-                <div class="col-3 card">
-                    <div class="list-group list-group-flush">
-                        <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
-                                <div class="lead">20 demandes d'absences</div>
-                            </a>
-                        </router-link>
-                        <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
-                                <div class="lead">8 en attente validation</div>
-                            </a>
-                        </router-link>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="list-group list-group-flush">
+                            <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
+                                    <div class="lead">20 demandes d'absences</div>
+                                </a>
+                            </router-link>
+                            <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
+                                    <div class="lead">8 en attente validation</div>
+                                </a>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
-                <div class="col card">
-                    <form class="row card-body" method="post" action="/" @submit.prevent="createPeriode()">
-                        <h2 class="mb-3">Nouvelle demande d'absence</h2>
-                        <div class="col-4">
-                            <label for="dd" class="form-label">Date début</label>
-                            <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :format="format" :minDate="new Date()" :enableTimePicker="false"></Datepicker>
-                        </div>
-                        <div class="col-4">
-                            <label for="df" class="form-label">Date de fin</label>
-                            <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :format="format" :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker>
-                        </div>
-                        <div  class="col-4">
-                            <label for="" class="form-label">&nbsp;</label>
-                            <button class="form-control btn btn-outline-primary" type="submit">
-                                <span>Créer</span>
-                            </button>
-                        </div>
-                    </form>
+                <div class="col">
+                    <div class="card">
+                        <form class="row card-body" @submit.prevent="createPeriode()" method="post" action="/">
+                            <h2 class="mb-3">Nouvelle demande d'absence</h2>
+                            <div class="col-4">
+                                <label for="dd" class="form-label">Date début</label>
+                                <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :minDate="new Date()" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
+                            </div>
+                            <div class="col-4">
+                                <label for="df" class="form-label">Date de fin</label>
+                                <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
+                            </div>
+                            <div  class="col-4">
+                                <label for="" class="form-label">&nbsp;</label>
+                                <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending.creation">
+                                    <span>Créez</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <router-view :codages="codages" :periodesAbsence="periodesAbsence" :managers="managers"></router-view>
+        <router-view 
+            :codages="codages" 
+            :periodesAbsence="periodesAbsence" 
+            :managers="managers" 
+            :absence="absence"
+            
+            @absence-created="addAbsence"></router-view>
     </div>
 </template>
 
@@ -58,7 +68,8 @@ export default {
         return {
             periodesAbsence: [],
             pending: {
-                extended: true
+                extended: true,
+                creation:false
             },
             error: null,
             datePeriodeAbsence: {
@@ -68,9 +79,8 @@ export default {
             codages: [],
 
             managers:[],
-            absence : null
-            
-            
+            absence : null,
+            absences: []
         }
     },
 
@@ -127,6 +137,8 @@ export default {
             let datedf = new Date(this.datePeriodeAbsence.df);
             let df = datedf.getFullYear()+'-'+this.getTwoDigit(datedf.getMonth()+1)+'-'+this.getTwoDigit(datedf.getDate());
 
+            this.pending.creation = true;
+
 
             this.$app.apiPost(apiUrl, {
                 dd:dd,
@@ -134,12 +146,14 @@ export default {
             })
             .then( (data) => {
                 this.periodesAbsence = data.periode;
-                this.absence = data.absence;
+                this.absence = data.absence[0];
 
                 let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/absence/'+data.absence.id+'/codage';
                 this.$app.apiGet(apiUrl)
                 .then((data) => {
                     this.codages = data.result;
+
+                    this.pending.creation = false;
 
                     this.$router.push('/personnel/'+this.openedElement.id+'/absence_config');
                 })
@@ -179,6 +193,14 @@ export default {
             })
             .catch(this.$app.catchError);
         },
+
+        /**
+         * Ajoute une absence à la liste des absences.
+         * @param {Object} payload Une absence
+         */
+        addAbsence(payload) {
+            this.absences.push(payload);
+        }
 
 
     },

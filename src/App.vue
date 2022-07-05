@@ -115,7 +115,9 @@ export default {
 		listElements(action) {
 			action = typeof action === 'undefined' ? 'update' : action;
 
-			return this.$app.apiGet('structurePersonnel/GET/listByLogin')
+			return this.$app.apiGet('structurePersonnel/GET/listByLogin', {
+				nx: true
+			})
 			.then((data) => {
 				this.$store.dispatch('refreshElements', {
 					action,
