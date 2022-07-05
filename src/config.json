@@ -1,11 +1,11 @@
 {
-    "name": "sample",
+    "name": "gta-absence",
     "cfg": {
-        "module": "sample",
-        "moduleLabel": "Sample module",
+        "module": "rh",
+        "moduleLabel": "GTA Absence",
         "aside": true,
         "app_mode": "default",
-        "ppp": "private",
+        "ppp": "partner",
         "logos": null
     },
     "cfgMenu": {
@@ -19,7 +19,7 @@
     },
     "api": {
         "baseURL": "http://local.fe.tld/api/",
-        "elements": "sample"
+        "elements": "structurePersonnel"
     },
     "firebaseConfig": {
         "apiKey": "AIzaSyAm-yEHEBuXt_2frDrNrH2o3mT0Ffj_4v0",

@@ -146,6 +146,8 @@ export default createStore({
 			}
 		},
 
+		
+
 		/**
 		 * Ferme l'élément ouvert
 		 * @param {Object} context Instance VueX
