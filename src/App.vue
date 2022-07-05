@@ -66,7 +66,7 @@
 import AppWrapper from '@/components/pebble-ui/AppWrapper.vue'
 import AppMenu from '@/components/pebble-ui/AppMenu.vue'
 import AppMenuItem from '@/components/pebble-ui/AppMenuItem.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 import CONFIG from "@/config.json"
 
@@ -85,7 +85,8 @@ export default {
 	},
 
 	computed: {
-		...mapState(['elements', 'openedElement'])
+		...mapState(['elements', 'openedElement']),
+		...mapGetters(['primary_personnel'])
 	},
 
 	methods: {
@@ -107,12 +108,14 @@ export default {
 		/**
 		 * Envoie une requête pour lister les éléments et les stocke dans le store
 		 * 
-		 * @param {Object} params Paramètre passés en GET dans l'URL
 		 * @param {String} action 'update' (défaut), 'replace', 'remove'
+		 * 
+		 * @returns {Promise}
 		 */
-		listElements(params, action) {
+		listElements(action) {
 			action = typeof action === 'undefined' ? 'update' : action;
-			this.$app.listElements(this, params)
+
+			return this.$app.apiGet('structurePersonnel/GET/listByLogin')
 			.then((data) => {
 				this.$store.dispatch('refreshElements', {
 					action,
@@ -140,6 +143,21 @@ export default {
 		AppWrapper,
 		AppMenu,
 		AppMenuItem
+	},
+
+	mounted() {
+		this.$router.push('/');
+		
+		this.$app.addEventListener('structureChanged', (user) => {
+			if(user) {
+				this.listElements()
+				.then(() => {
+					if (this.primary_personnel) {
+						this.$router.push('/personnel/'+this.primary_personnel.id);
+					}
+				});
+			}
+		});
 	}
 
 }

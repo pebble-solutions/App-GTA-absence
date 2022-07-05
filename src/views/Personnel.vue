@@ -1,8 +1,8 @@
 <template>
     <div v-if="openedElement">
         <div class="alert alert-danger" v-if="error">{{error}}</div>
-        <h1>Absence #{{openedElement.matricule}} {{openedElement.cache_nom}}</h1>
-        <p>{{openedElement.description}}</p>
+            <h1>Absence #{{openedElement.matricule}} {{openedElement.cache_nom}}</h1>
+            <p>{{openedElement.description}}</p>
         <div>structure_personnel_id : {{openedElement.id}}</div>
         <!--<pre>{{openedElement}}</pre>-->
         <div class="container">
@@ -139,11 +139,6 @@ export default {
         Datepicker
     },
     methods: {
-
-        
-
-        
-        
 
         load(id) {
             this.pending.extended;

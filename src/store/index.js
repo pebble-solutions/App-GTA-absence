@@ -12,6 +12,10 @@ export default createStore({
 	getters: {
 		activeStructure(state) {
 			return state.structures.find(e => e.id === state.activeStructureId);
+		},
+
+		primary_personnel(state) {
+			return state.elements.find(e => e.primary == true);
 		}
 	},
 	mutations: {
