@@ -9,29 +9,17 @@
 
     
         <div class="container">
-            <div class="card shadow-sm mt-4">
-                <div class="card-body">
-                    
-                </div>
-            </div>
-            
-            <div class="card shadow-sm mt-4">
+            <h2 class="my-2">Vos demandes d'absences</h2>
+            <div class="card row">
                 <div class=" card-body">
-                    <h2 class="mb-3">Vos absences</h2>
-                    <div class="card-body">
-                        <div class ="list-group" v-for="abs in listabsence" :key="'absence'+abs.id">
-                        <div class="list-group-item">
-                        <label class="form-label">du {{abs.dd}} au  {{abs.df}}</label>
-                        <select class="form-select">
-                        </select>
-                        <span class="col-2"><i class="bi bi-trash"></i></span>
+                    <div class ="list-group list-group-flush" v-for="abs in listabsence" :key="'absence'+abs.id">
+                        <div class="list-group-item d-flex flex-row align-items-center">
+                            <label class="form-label">{{abs.dd}} {{abs.df}}</label>
+                            <select class="form-select">
+                            </select>
+                            <span class="col-2"><i class="bi bi-trash"></i></span>
                         </div>
                     </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card shadow-sm mt-3 mb-3">
-                <div class="card-body">
                 </div>
             </div>
         </div>
@@ -41,7 +29,7 @@
         <router-view></router-view>
 
     
-    <div>Hell world</div>
+    <div class="badge text-success">Hello Leader <i class="bi bi-joystick"></i></div>
 
 </template>
 

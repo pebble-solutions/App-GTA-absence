@@ -1,94 +1,66 @@
 <template>
     <div v-if="openedElement">
         <div class="alert alert-danger" v-if="error">{{error}}</div>
-            <h1>Absence #{{openedElement.matricule}} {{openedElement.cache_nom}}</h1>
-            <p>{{openedElement.description}}</p>
-        <div>structure_personnel_id : {{openedElement.id}}</div>
-        <!--<pre>{{openedElement}}</pre>-->
         <div class="container">
-            <div class="card shadow-sm mt-4">
-                <div class="card-body">
-                    <h2 class="mb-3">Tableau de bord</h2>
-                    <div class="row">
+        <h1 class="d-flex flex-row align-items-baseline justify-content-between my-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
+
+            <div class="row">
+                <div class="col-3 card">
+                    <div class="list-group list-group-flush">
                         <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                            <a @click="navigate" :href="href" class="col">
-                                <div class="card shadow-sm">
-                                    <div class="card-body">
-                                        <p class="card-text">Liste absences</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            
-                                        </div>
-                                    </div> 
-                                </div>
+                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
+                                <div class="lead">20 demandes d'absences</div>
                             </a>
                         </router-link>
-                        <a class="col">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <p class="card-text">En attente validation</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        <a class="col">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <p class="card-text">Soldes</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                        <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
+                                <div class="lead">8 en attente validation</div>
+                            </a>
+                        </router-link>
                     </div>
                 </div>
-            </div>
-            
-            <div class="card shadow-sm mt-4">
-                <div class=" card-body">
-                    <h2 class="mb-3">Définissez votre période d'absence</h2>
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6">
-                            <label for="dd" class="form-label col">Date début:</label>
+                <div class="col card">
+                    <div class="row card-body">
+                        <h2 class="mb-3">Nouvelle demande d'absence</h2>
+                        <div class="col-4">
+                            <label for="dd" class="form-label">Date début</label>
                             <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :format="format" :minDate="new Date()" :enableTimePicker="false"></Datepicker>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <label for="df" class="form-label col">Date de fin:</label>
+                        <div class="col-4">
+                            <label for="df" class="form-label">Date de fin</label>
                             <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :format="format" :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker>
                         </div>
-                    </div>
-                    <div  class="col-3 m-2">
-                        <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
-                            <span>Créez</span>
-                           <!--<span v-if="!periodesAbsence" v-else>Modifiez</span>-->
-                        </button>
+                        <div  class="col-4">
+                            <label for="" class="form-label">&nbsp;</label>
+                            <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
+                                <span>Créez</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="card shadow-sm mt-3 mb-3">
+
+
+            <div class="row mt-3 card">
                 <div class="card-body">
                     <h2 class="mb-3">Configurez votre demande</h2>
-                    <div class ="list-group" v-for="periode in periodesAbsence" :key="'periode-'+periode.id">
-                        <div class="list-group-item">
-                       <label class="form-label">le {{periode.period_day}} / {{periode.period_month}} / {{periode.period_year}}</label>
-                                <select class="form-select">
-                                    <option v-for="codage in codages" :key="codage.id">{{codage.nom}}</option>
-                                </select>
-                        <span class="col-2"><i class="bi bi-trash"></i></span>
+                    <div class="list-group list-group-flush">
+                        <div class ="list-group-item d-flex flex-row align-items-baseline" v-for="periode in periodesAbsence" :key="'periode-'+periode.id">
+                            <label class="mx-1">{{periode.period_day}}/{{periode.period_month}}/{{periode.period_year}}</label>
+                            <select class="form-select mx-1">
+                                <option v-for="codage in codages" :key="codage.id">{{codage.nom}}</option>
+                            </select>
+                            <button class="mx-1 btn btn-outline-danger"> <span> <i class="bi bi-x-circle-fill"></i></span></button>
                         </div>
-                    </div>
-                    <div class="card-body bg-light">
-                       <label class="form-label">Demandez la validation à</label>
-
-                        <select name="validateur" id="validateur" class="form-select">
-                            <option v-for="validateur in validator" :key="validateur.id"> {{validateur.cache_nom}} </option>
-                        </select>
-
-                    
-                        <button class="form-control btn btn-outline-primary" type="button">
-                            <span>Envoyez</span>
-                        </button>
+                        <div class="list-group-item d-flex flex-row align-items-center justify-content-between">
+                            <div class="">Demandez validation à</div>
+                            <div class="col-5"><select name="validateur" id="validateur" class="form-select mx-1">
+                                <option v-for="validateur in validator" :key="validateur.id"> {{validateur.cache_nom}} </option>
+                            </select></div>
+                            <button class="btn btn-outline-primary" type="button">
+                                <span>Envoyez</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
