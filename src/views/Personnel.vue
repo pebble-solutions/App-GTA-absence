@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="col card">
-                    <div class="row card-body">
+                    <form class="row card-body" method="post" action="/" @submit.prevent="createPeriode()">
                         <h2 class="mb-3">Nouvelle demande d'absence</h2>
                         <div class="col-4">
                             <label for="dd" class="form-label">Date début</label>
@@ -32,43 +32,16 @@
                         </div>
                         <div  class="col-4">
                             <label for="" class="form-label">&nbsp;</label>
-                            <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
-                                <span>Créez</span>
+                            <button class="form-control btn btn-outline-primary" type="submit">
+                                <span>Créer</span>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="row mt-3 card">
-                <div class="card-body">
-                    <h2 class="mb-3">Configurez votre demande</h2>
-                    <div class="list-group list-group-flush">
-                        <div class ="list-group-item d-flex flex-row align-items-baseline" v-for="periode in periodesAbsence" :key="'periode-'+periode.id">
-                            <label class="mx-1">{{periode.period_day}}/{{periode.period_month}}/{{periode.period_year}}</label>
-                            <select class="form-select mx-1">
-                                <option v-for="codage in codages" :key="codage.id">{{codage.nom}}</option>
-                            </select>
-                            <button class="mx-1 btn btn-outline-danger"> <span> <i class="bi bi-x-circle-fill"></i></span></button>
-                        </div>
-                        <div class="list-group-item d-flex flex-row align-items-center justify-content-between">
-                            <div class="">Demandez validation à</div>
-                            <div class="col-5"><select name="validateur" id="validateur" class="form-select mx-1">
-                                <option v-for="validateur in validator" :key="validateur.id"> {{validateur.cache_nom}} </option>
-                            </select></div>
-                            <button class="btn btn-outline-primary" type="button">
-                                <span>Envoyez</span>
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-
-        
-        <router-view></router-view>
+        <router-view :codages="codages" :periodesAbsence="periodesAbsence" :managers="managers"></router-view>
     </div>
 </template>
 
@@ -94,7 +67,8 @@ export default {
             },
             codages: [],
 
-            validator:[],
+            managers:[],
+            absence : null
             
             
         }
@@ -160,29 +134,30 @@ export default {
             })
             .then( (data) => {
                 this.periodesAbsence = data.periode;
-                
-                console.log('data codage', data);
+                this.absence = data.absence;
+
                 let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/absence/'+data.absence.id+'/codage';
                 this.$app.apiGet(apiUrl)
                 .then((data) => {
-                    console.log('data detail',data);
                     this.codages = data.result;
+
+                    this.$router.push('/personnel/'+this.openedElement.id+'/absence_config');
                 })
                 .catch(this.$app.catchError);
             })
-            // .catch(this.$app.catchError);
-            .catch((error) => {
-                console.log(error);
-            })
+            .catch(this.$app.catchError);
         },
         
-        ChoiceValidator() {
+
+        /**
+         * Récupère la liste des managers disponibles pour le personnel en cours
+         */
+        listManager() {
 
             let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/nx';
             this.$app.apiGet(apiUrl)
             .then((data) => {
-                this.validator = data;
-                console.log(data);
+                this.managers = data;
             })
             .catch(this.$app.catchError);
         },
@@ -199,11 +174,8 @@ export default {
                 //group_by_personnel: true
             })
             .then( (data) => {
-                //this.absences = data.result;
                 console.log(data.result);
-                console.log(data)
-                //this.gta_codages = data.gta_codages;
-                //this.pending.week = false;
+                console.log(data);
             })
             .catch(this.$app.catchError);
         },
@@ -219,7 +191,7 @@ export default {
     },
     mounted() {
         this.load(this.$route.params.id);
-        this.ChoiceValidator();
+        this.listManager();
     }
 }
 </script>
