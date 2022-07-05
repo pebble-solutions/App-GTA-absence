@@ -5,36 +5,40 @@
         <h1 class="d-flex flex-row align-items-baseline justify-content-between my-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
 
             <div class="row">
-                <div class="col-3 card">
-                    <div class="list-group list-group-flush">
-                        <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
-                                <div class="lead">20 demandes d'absences</div>
-                            </a>
-                        </router-link>
-                        <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                            <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
-                                <div class="lead">8 en attente validation</div>
-                            </a>
-                        </router-link>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="list-group list-group-flush">
+                            <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
+                                    <div class="lead">20 demandes d'absences</div>
+                                </a>
+                            </router-link>
+                            <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
+                                    <div class="lead">8 en attente validation</div>
+                                </a>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
-                <div class="col card">
-                    <div class="row card-body">
-                        <h2 class="mb-3">Nouvelle demande d'absence</h2>
-                        <div class="col-4">
-                            <label for="dd" class="form-label">Date début</label>
-                            <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :format="format" :minDate="new Date()" :enableTimePicker="false"></Datepicker>
-                        </div>
-                        <div class="col-4">
-                            <label for="df" class="form-label">Date de fin</label>
-                            <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :format="format" :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker>
-                        </div>
-                        <div  class="col-4">
-                            <label for="" class="form-label">&nbsp;</label>
-                            <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
-                                <span>Créez</span>
-                            </button>
+                <div class="col">
+                    <div class="card">
+                        <div class="row card-body">
+                            <h2 class="mb-3">Nouvelle demande d'absence</h2>
+                            <div class="col-4">
+                                <label for="dd" class="form-label">Date début</label>
+                                <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :format="format" :minDate="new Date()" :enableTimePicker="false"></Datepicker>
+                            </div>
+                            <div class="col-4">
+                                <label for="df" class="form-label">Date de fin</label>
+                                <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :format="format" :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker>
+                            </div>
+                            <div  class="col-4">
+                                <label for="" class="form-label">&nbsp;</label>
+                                <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
+                                    <span>Créez</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
