@@ -1,6 +1,6 @@
 <template>
     <div>
-        {{absence}}
+        <div>{{formatDateFr(absence.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(absence.df)}}</div>
 
         <div class="list-group">
             <AbsencePeriode :periode="periode" v-for="periode in periodes" :key="'periode-'+periode.id" />
@@ -24,6 +24,17 @@ export default {
             codages: [],
             periodes: []
         };
+    },
+
+    methods: {
+
+        formatDateFr(date) {
+
+            let newDate = new Date(date);
+            let format = newDate.toLocaleDateString('fr-FR');
+            return format;
+        }        
+
     },
 
     computed: {

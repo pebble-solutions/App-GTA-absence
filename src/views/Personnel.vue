@@ -5,7 +5,7 @@
         <h1 class="d-flex flex-row align-items-baseline justify-content-between py-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
 
             <div class="row">
-                <div class="col-3">
+                    <!--
                     <div class="card">
                         <div class="list-group list-group-flush">
                             <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
@@ -20,15 +20,9 @@
                             </router-link>
                         </div>
                     </div>
+                    -->
 
-                    <div class="card my-2">
-                        <div class="list-group list-group-flush">
-                            <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card">
+                    <div v-if="openedElement.primary ===1" class="card">
                         <form class="row card-body" @submit.prevent="createPeriode()" method="post" action="/">
                             <h2 class="mb-3">Nouvelle demande d'absence</h2>
                             <div class="col-4">
@@ -47,7 +41,11 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                    <div class="card my-2">
+                        <div class="list-group list-group-flush">
+                            <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
+                        </div>
+                    </div>
             </div>
         </div>
 

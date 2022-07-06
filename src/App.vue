@@ -60,6 +60,29 @@
 	</AppWrapper>
 	
 </template>
+<style>
+.fs-7 {
+
+font-size : 0.9rem;
+
+}
+
+
+
+.fs-8 {
+
+font-size : 0.8rem;
+
+}
+
+
+
+.fs-9 {
+
+font-size: 0.7rem;
+
+}
+</style>
 
 <script>
 
