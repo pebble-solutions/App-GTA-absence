@@ -18,8 +18,14 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Personnel.vue'),
     children: [
       {
-        path: 'absence_config',
+        name: 'absence_config',
+        path: 'absence_config/:absenceId',
         component: () => import('../views/AbsenceConfig.vue')
+      },
+      {
+        name: 'absence_details',
+        path: 'absence_details/:absenceId',
+        component: () => import('../views/AbsenceDetails.vue')
       }
     ]
   },

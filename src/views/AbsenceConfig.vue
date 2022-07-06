@@ -35,18 +35,23 @@ export default {
         periodesAbsence: Array,
         codages: Array,
         managers: Array,
-        absence: Object
+        absences: Array
     },
 
     data() {
         return {
             pending: false,
-            absenceTarget: null
+            absenceTarget: null,
+            modal: null
         }
     },
 
     computed: {
-        ...mapState(['openedElement'])
+        ...mapState(['openedElement']),
+
+        absence() {
+            return this.absences.find(e => e.id == this.$route.params.absenceId);
+        }
     },
 
     components: {
@@ -69,8 +74,8 @@ export default {
             });
 
             this.$app.apiPost('structurePersonnel/POST/'+this.openedElement.id+'/absence/'+this.absence.id, {
-                absence_commentaire: this.absence.commentaire,
-                absence_nx: this.absence.validation_personne_id,
+                absence_commentaire: this.absenceTarget.commentaire,
+                absence_nx: this.absenceTarget.validation_personne_id,
                 declaration_id: JSON.stringify(periodes),
                 codage_id: JSON.stringify(codages),
                 notifier: 1
@@ -88,6 +93,14 @@ export default {
         console.log('periode', this.periodesAbsence);
 
         this.absenceTarget = this.absence;
+    },
+
+    mounted() {
+        this.modal = document.getElementById('absenceConfigModal');
+
+        this.modal.addEventListener('hidden.bs.modal', () => {
+            this.$router.push('/personnel/'+this.openedElement.id);
+        });
     }
 
 }

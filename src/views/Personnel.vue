@@ -20,6 +20,12 @@
                             </router-link>
                         </div>
                     </div>
+
+                    <div class="card my-2">
+                        <div class="list-group list-group-flush">
+                            <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
+                        </div>
+                    </div>
                 </div>
                 <div class="col">
                     <div class="card">
@@ -49,9 +55,7 @@
             :codages="codages" 
             :periodesAbsence="periodesAbsence" 
             :managers="managers" 
-            :absence="absence"
-            
-            @absence-created="addAbsence"></router-view>
+            :absences="absences"></router-view>
     </div>
 </template>
 
@@ -61,6 +65,7 @@ import {mapState} from 'vuex';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import { ref } from 'vue';
+import AbsenceItem from '../components/AbsenceItem.vue';
 
 export default {
 
@@ -92,8 +97,9 @@ export default {
         
     },
     components: {
-        Datepicker
-    },
+    Datepicker,
+    AbsenceItem
+},
     methods: {
 
         load(id) {
@@ -148,14 +154,16 @@ export default {
                 this.periodesAbsence = data.periode;
                 this.absence = data.absence[0];
 
-                let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/absence/'+data.absence.id+'/codage';
+                this.addAbsence(this.absence);
+
+                let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/absence/'+this.absence.id+'/codage';
                 this.$app.apiGet(apiUrl)
                 .then((data) => {
                     this.codages = data.result;
 
                     this.pending.creation = false;
 
-                    this.$router.push('/personnel/'+this.openedElement.id+'/absence_config');
+                    this.$router.push('/personnel/'+this.openedElement.id+'/absence_config/'+this.absence.id);
                 })
                 .catch(this.$app.catchError);
             })
@@ -188,8 +196,7 @@ export default {
                 //group_by_personnel: true
             })
             .then( (data) => {
-                console.log(data.result);
-                console.log(data);
+                this.absences = data.result;
             })
             .catch(this.$app.catchError);
         },
