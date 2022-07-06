@@ -6,13 +6,14 @@
         "aside": true,
         "app_mode": "default",
         "ppp": "partner",
-        "logos": null
+        "logos": null,
+        "menuMode": "list"
     },
     "cfgMenu": {
         "href": null
     },
     "cfgSlots": {
-        "menu": false,
+        "menu": true,
         "list": true,
         "core": true,
         "header": true
