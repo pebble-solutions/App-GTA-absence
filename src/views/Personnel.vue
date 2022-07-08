@@ -2,27 +2,42 @@
     <div v-if="openedElement">
         <div class="alert alert-danger" v-if="error">{{error}}</div>
         <div class="container">
-        <h1 class="d-flex flex-row align-items-baseline justify-content-between py-2">Absences {{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
+        <h1 class="d-flex flex-row align-items-baseline justify-content-between py-2">{{openedElement.cache_nom}} <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}} </span></h1>
 
-            <div class="row">
-                    <!--
-                    <div class="card">
+            <div class="row my-2">
+                    
+                    <div class="card col">
                         <div class="list-group list-group-flush">
+                            <h2 class="text-center list-group-item">Alertes</h2>
                             <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center text-primary">
-                                    <div class="lead">20 demandes d'absences</div>
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center">
+                                    <div class="lead">En attente validation: X</div>
                                 </a>
                             </router-link>
                             <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
-                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center bg-warning">
-                                    <div class="lead">8 en attente validation</div>
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center">
+                                    <div class="lead"> À valider (n+1): Y</div>
+                                </a>
+                            </router-link>
+                            <router-link :to="{name: 'ListAbsence', params: {id: openedElement.id}}" custom v-slot="{navigate, href}">
+                                <a @click="navigate" :href="href" class="list-group-item list-group-item-action text-center">
+                                    <div class="lead">À traiter (RH/paie): Z</div>
                                 </a>
                             </router-link>
                         </div>
                     </div>
-                    -->
+                    <div class="card col">
+                        <div class="list-group list-group-flush">
+                            <h2 class="text-center list-group-item">Compteurs</h2>
+                            <div class="lead list-group-item text-center">congés acquis: X</div>
+                            <div class="lead list-group-item text-center">congés pris: Y</div>
+                            <div class="lead list-group-item text-center text-primary">SOLDE: Z</div>
+                            
+                        </div>
+                    </div>
+                    
 
-                    <div v-if="openedElement.primary ===1" class="card">
+                    <div  class="card">
                         <form class="row card-body" @submit.prevent="createPeriode()" method="post" action="/">
                             <h2 class="mb-3">Nouvelle demande d'absence</h2>
                             <div class="col-4">
@@ -36,7 +51,7 @@
                             <div  class="col-4">
                                 <label for="" class="form-label">&nbsp;</label>
                                 <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending.creation">
-                                    <span>Créez</span>
+                                    <span>Créer</span>
                                 </button>
                             </div>
                         </form>
@@ -134,6 +149,7 @@ export default {
 
 
         createPeriode() {
+            
             let apiUrl = 'structurePersonnel/POST/'+this.openedElement.id+'/absence';
  
             let datedd = new Date(this.datePeriodeAbsence.dd);

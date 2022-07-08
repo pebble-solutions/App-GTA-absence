@@ -47,7 +47,7 @@
 
 		<template v-slot:list>
 			<AppMenu>
-				<AppMenuItem :href="'/personnel/'+el.id" icon="bi bi-file-earmark" v-for="el in elements" :key="el.id">{{el.cache_nom}} {{el.matricule}} <span class="badge bg-warning float-end">8</span> </AppMenuItem>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
