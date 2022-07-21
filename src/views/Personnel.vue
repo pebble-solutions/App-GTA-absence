@@ -22,22 +22,24 @@
                     </div>
                     -->
 
-                    <div v-if="openedElement.primary ===1" class="card">
-                        <form class="row card-body" @submit.prevent="createPeriode()" method="post" action="/">
+                    <div v-if="openedElement.primary === true" class="card">
+                        <form class="card-body" @submit.prevent="createPeriode()" method="post" action="/">
                             <h2 class="mb-3">Nouvelle demande d'absence</h2>
-                            <div class="col-4">
-                                <label for="dd" class="form-label">Date début</label>
-                                <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :minDate="new Date()" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
-                            </div>
-                            <div class="col-4">
-                                <label for="df" class="form-label">Date de fin</label>
-                                <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
-                            </div>
-                            <div  class="col-4">
-                                <label for="" class="form-label">&nbsp;</label>
-                                <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending.creation">
-                                    <span>Créez</span>
-                                </button>
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="dd" class="form-label">Date début</label>
+                                    <Datepicker  v-model="datePeriodeAbsence.dd"  id="dd" autoApply :minDate="new Date()" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
+                                </div>
+                                <div class="col-4">
+                                    <label for="df" class="form-label">Date de fin</label>
+                                    <Datepicker  v-model="datePeriodeAbsence.df" id="df" autoApply :minDate="datePeriodeAbsence.dd" :enableTimePicker="false"></Datepicker><!-- :format="format"  -->
+                                </div>
+                                <div  class="col-4">
+                                    <label for="" class="form-label">&nbsp;</label>
+                                    <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending.creation">
+                                        <span>Créer</span>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
