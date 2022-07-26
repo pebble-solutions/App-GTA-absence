@@ -7,7 +7,8 @@ export default createStore({
 		login: null,
 		elements: [],
 		openedElement: null,
-		tmpElement: null
+		tmpElement: null,
+		absences_validation: []
 	},
 	getters: {
 		activeStructure(state) {
@@ -130,6 +131,10 @@ export default createStore({
 		 */
 		setStructureId(state, structureId) {
 			state.activeStructureId = structureId;
+		},
+
+		absences_validation (state, data) {
+			state.absences_validation = data;
 		}
 	},
 	actions: {
