@@ -1,38 +1,187 @@
 <template>
-    <AppModal id="absenceDetails" title="Demande d'absence" :display="true">
-        <Absence :absence="absence" :managers="managers" />
+    <AppModal id="absenceDetails" title="Demande d'absence" :display="true" :footer="false" backdrop="static">
+        <Spinner v-if="pending.datas" />
+
+        <template v-else>
+            <AbsenceConfigOverview 
+                :absence="absence" 
+                :managers="managers"
+                :periodes="periodes"
+                :codages="codages"
+                :declarations="declarations"
+
+                :editable="isEditable"
+
+                @edit-mode="setActionRoute('edit')"
+                @authorize="setActionRoute('authorize')"
+                @refuse="setActionRoute('refuse')"
+                
+                v-if="mode == 'overview'" />
+
+            <AbsenceConfigForm
+                :absence="absence" 
+                :managers="managers"
+                :periodes="periodes"
+                :codages="codages"
+                :declarations="declarations"
+
+                @recorded="refreshAndSwitch"
+                @cancel="switchToOverviewMode"
+                
+                v-else-if="mode == 'edit'" />
+            
+            <AbsenceValidation 
+                :absences="[absence]"
+                :validation_action="validation_action"
+
+                @recorded="refreshAbsencesAndSwitch"
+                @cancel="switchToOverviewMode"
+
+                v-else-if="mode == 'validation'"
+                />
+        </template>
     </AppModal>
 
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import Absence from '../components/Absence.vue';
+import { mapGetters, mapState } from 'vuex';
+import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
 import AppModal from '../components/pebble-ui/AppModal.vue';
+import Spinner from '../components/pebble-ui/Spinner.vue';
+import AbsenceConfigForm from '../components/AbsenceConfigForm.vue';
+import AbsenceValidation from '../components/AbsenceValidation.vue';
 
 export default {
     props: {
-        absences: Array,
         managers: Array
     },
     
     data() {
         return {
-            modal: null
+            modal: null,
+            periodes: [],
+            codages: [],
+            declarations: [],
+            absence: null,
+            pending: {
+                datas:true
+            },
+            mode: 'overview',
+            validation_action: null
         }
     }, 
 
     computed: {
-        absence() {
-            let absence_id = this.$route.params.absenceId;
-            return this.absences.find(e => e.id == absence_id);
+        ...mapState(['openedElement']),
+        ...mapGetters(['primary_personnel']),
+        
+        /**
+         * Contrôle si l'élément est éditable. Un élément est éditable dans les condtions suivantes
+         * - Il n'a pas été validé
+         * - Il appartient à l'utilisateur connecté
+         * Les deux conditions doivent être réunies
+         * 
+         * @return {Boolean}
+         */
+        isEditable() {
+            if (this.absence.valider === null && this.absence.structure__personnel_id == this.primary_personnel.id) return true;
+            return false;
+        }
+    },
+
+    components: { AbsenceConfigOverview, AppModal, Spinner, AbsenceConfigForm, AbsenceValidation },
+
+    methods: {
+        /**
+         * Met à jour les informations stockées au niveau de data et passe en mode overview
+         * 
+         * @param {Object} payload L'ensemble des données à mettre à jour
+         * - periodes
+         * - declarations
+         * - absence
+         */
+        refreshAndSwitch(payload) {
+            this.refreshDatas(payload);
+            this.switchToOverviewMode();
         },
 
-        ...mapState(['openedElement'])
+        /**
+         * Met à jour la GtaAbsence chargée depuis une liste de GtaAbsence (post-enregistrement)
+         * et bascule en mode overview
+         * @param {Array} absences Collection de GtaAbsence
+         */
+        refreshAbsencesAndSwitch(absences) {
+            this.absence = absences[0];
+            this.switchToOverviewMode();
+        },
+
+        /**
+         * Met à jour les données stockées. Si une clée n'est pas disponible, data n'est pas modifié.
+         * 
+         * @param {Object} payload L'ensemble des données à mettre à jour
+         * - periodes
+         * - declarations
+         * - absence
+         */
+        refreshDatas(payload) {
+            for (const key in payload) {
+                this[key] = payload[key];
+            }
+        },
+
+        /**
+         * Bascule en mode consultation. La route est modifiée.
+         */
+        switchToOverviewMode() {
+            this.$router.push('/personnel/'+this.openedElement.id+'/absence_details/'+this.absence.id);
+        },
+
+        /**
+         * Modification de l'action de la route
+         */
+        setActionRoute(action) {
+            this.$router.push('/personnel/'+this.openedElement.id+'/absence_details/'+this.absence.id+'/'+action);
+        },
+
+        /**
+         * Vérifie la route active afin de basculer dans le bon mode (overview ou edit)
+         * @param {String} action           Action fournie par l'url
+         */
+        checkRouteMode(action) {
+            if (action == 'edit') this.mode = 'edit';
+            else if (action == 'authorize' || action == 'refuse') {
+                this.mode = 'validation';
+                this.validation_action = action == 'authorize' ? true : false;
+            }
+            else this.mode = 'overview';
+        }
     },
-    components: { Absence, AppModal },
+
+    beforeRouteUpdate(to, from) {
+        if (to.params.id !== from.params.id) {
+            this.load(to.params.id);
+        }
+
+        this.checkRouteMode(to.params.action);
+    },
 
     mounted() {
+
+        // Chargement des informations concernant l'absence passée en url
+        this.$app.apiGet("structurePersonnel/GET/" + this.openedElement.id + "/absence/" + this.$route.params.absenceId)
+        .then((data) => {
+            this.periodes = data.result.periode;
+            this.codages = data.result.codage;
+            this.declarations = data.result.declaration;
+            this.absence = data.result.absence[0];
+
+            this.pending.datas = false;
+        })
+        .catch(this.$app.catchError);
+
+        this.checkRouteMode(this.$route.params.action);
+
         this.modal = document.getElementById('absenceDetailsModal');
 
         this.modal.addEventListener('hidden.bs.modal', () => {

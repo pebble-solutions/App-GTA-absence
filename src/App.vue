@@ -5,8 +5,7 @@
 		:cfg-menu="cfgMenu"
 		:cfg-slots="cfgSlots"
 		
-		@auth-change="setLocal_user"
-		@structure-change="switchStructure">
+		@auth-change="setLocal_user">
 
 		<template v-slot:header>
 			<div class="mx-2 d-flex align-items-center" v-if="openedElement">
@@ -15,39 +14,27 @@
 						<i class="bi bi-arrow-left"></i>
 					</a>
 				</router-link>
-				<router-link :to="'/element/'+openedElement.id+'/properties'" custom v-slot="{ navigate, href }">
-					<a class="btn btn-dark me-2" :href="href" @click="navigate">
-						<i class="bi bi-file-earmark me-1"></i>
-						{{openedElement.cache_nom}}
-					</a>
-				</router-link>
 
-				<div class="dropdown">
-					<button class="btn btn-dark dropdown-toggle" type="button" id="fileDdMenu" data-bs-toggle="dropdown" aria-expanded="false">
-						Fichier
-					</button>
-					<ul class="dropdown-menu" aria-labelledby="fileDdMenu">
-						<li>
-							<router-link :to="'/element/'+openedElement.id+'/informations'" custom v-slot="{ navigate, href }">
-								<a class="dropdown-item" :href="href" @click="navigate">Informations</a>
-							</router-link>
-						</li>
-					</ul>
-				</div>
+				<span class="me-2">
+					<i class="bi bi-person-square me-1"></i>
+					{{openedElement.cache_nom}}
+				</span>
 			</div>
 		</template>
 
 
 		<template v-slot:menu>
 			<AppMenu>
-				<AppMenuItem href="/" look="dark" icon="bi bi-house">Accueil</AppMenuItem>
-				<AppMenuItem href="/about" look="dark" icon="bi bi-app">À propos</AppMenuItem>
+				<AppMenuItem href="/" look="dark" icon="bi bi-people">Mon personnel</AppMenuItem>
+				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Absence à valider</AppMenuItem>
 			</AppMenu>
 		</template>
 
 		<template v-slot:list>
-			<AppMenu>
-				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
+			<AppMenu v-if="$route.name == 'validation'">
+			</AppMenu>
+			<AppMenu v-else>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -62,25 +49,15 @@
 </template>
 <style>
 .fs-7 {
-
-font-size : 0.9rem;
-
+	font-size : 0.9rem;
 }
-
-
 
 .fs-8 {
-
-font-size : 0.8rem;
-
+	font-size : 0.8rem;
 }
 
-
-
 .fs-9 {
-
 font-size: 0.7rem;
-
 }
 </style>
 
@@ -110,6 +87,12 @@ export default {
 	computed: {
 		...mapState(['elements', 'openedElement']),
 		...mapGetters(['primary_personnel'])
+	},
+
+	watch: {
+		$route() {
+			this.$app.dispatchEvent('menuChanged', 'list');
+		}
 	},
 
 	methods: {
@@ -156,9 +139,26 @@ export default {
 		 * @param {Integer} structureId
 		 */
 		switchStructure(structureId) {
-			this.$router.push('/');
-			this.$store.dispatch('switchStructure', structureId);
-			this.listElements();
+			if(structureId) {
+
+				this.$store.dispatch('switchStructure', structureId);
+
+				this.listElements()
+				.then(() => {
+					/* La variable primary_personnel est stockée au niveau du store.
+					 * Elle est dynamique et n'est renseignée que si le primary_personnel_id existe 
+					 * dans la table des personnels stockés au niveau du store. Conditions à remplir :
+					 * - L'utilisateur connecté a un primary_personnel_id
+					 * - L'utilisateur est connecté à la structure de rattachement de son primary_personnel
+					 */
+					if (this.primary_personnel) {
+						this.$router.push('/personnel/'+this.primary_personnel.id);
+					}
+					else {
+						this.$router.push('/');
+					}
+				});
+			}
 		},
 
 		...mapActions(['closeElement'])
@@ -173,16 +173,10 @@ export default {
 	mounted() {
 		this.$router.push('/');
 		
-		this.$app.addEventListener('structureChanged', (user) => {
-			if(user) {
-				this.listElements()
-				.then(() => {
-					if (this.primary_personnel) {
-						this.$router.push('/personnel/'+this.primary_personnel.id);
-					}
-				});
-			}
+		this.$app.addEventListener('structureChanged', (structureId) => {
+			this.switchStructure(structureId);
 		});
+
 	}
 
 }
