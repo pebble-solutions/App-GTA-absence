@@ -26,7 +26,6 @@
                     <div  class="col-3 m-2">
                         <button @click.prevent="createPeriode()" class="form-control btn btn-outline-primary" type="button">
                             <span v-if="!periodesAbsence">Créez</span>
-                            <span v-else>Modifiez</span>
                         </button>
                     </div>
                     
