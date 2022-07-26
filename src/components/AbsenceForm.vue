@@ -10,11 +10,11 @@
     <form @submit.prevent="createAbsence()" method="post" action="/">
         <h2 class="mb-3">Nouvelle demande d'absence</h2>
         <div class="row">
-            <div class="col-8">
+            <div :class="{'col-12': this.winWidth <= 576, 'col-8': this.winWidth > 576}">
                 <label for="absence_dd" class="form-label">Dates de l'absence</label>
                 <Datepicker  v-model="dateAbsence" id="absence_dd" autoApply :minDate="new Date()" :enableTimePicker="false" format="dd/MM/yyyy" range></Datepicker><!-- :format="format"  -->
             </div>
-            <div  class="col-4">
+            <div :class="{'col-12': this.winWidth <= 576, 'col-4': this.winWidth > 576}">
                 <label for="" class="form-label">&nbsp;</label>
                 <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending">
                     <span>Créer</span>
@@ -33,6 +33,9 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import { mapState } from 'vuex';
 
 export default {
+    props: {
+        winWidth: Number
+    },
 
     data() {
         return {
@@ -51,7 +54,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['openedElement'])
+        ...mapState(['openedElement']),
     },
 
     methods: {
@@ -103,6 +106,8 @@ export default {
         const end = new Date();
 
         this.dateAbsence = [start, end];
+
+        console.log('winWidth', this.winWidth);
     }
 }
 
