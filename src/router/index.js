@@ -18,16 +18,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Personnel.vue'),
     children: [
       {
-        name: 'absence_config',
-        path: 'absence_config/:absenceId',
-        component: () => import('../views/AbsenceConfig.vue')
-      },
-      {
         name: 'absence_details',
-        path: 'absence_details/:absenceId',
+        path: 'absence_details/:absenceId/:action?',
         component: () => import('../views/AbsenceDetails.vue')
       }
     ]
+  },
+  {
+    path: '/validation',
+    name: 'validation',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Validation.vue'),
   },
   {
     path:'/listabsence/:id',

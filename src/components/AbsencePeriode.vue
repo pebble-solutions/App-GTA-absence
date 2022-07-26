@@ -1,24 +1,7 @@
 <template>
-    <div class="list-group-item d-flex justify-content-between align-items-center">
-        <div> {{ getTwoDigit(periode.period_day)}}/{{getTwoDigit(periode.period_month)}}/{{periode.period_year}} </div>
-            <div v-if="!absence.valider">
-                <select  class="form-select mx-2">
-                    <option></option>
-                    <option v-for="codage in codages" :key="codage.id" value="codage.nom">{{codage.nom}}</option>
-                </select>
-            </div>
-            <div v-else>
-                <p>{{getCodageNom()}}</p>
-            </div>
-        <!--
-        <div class="form-select" v-for="item in codages" :key="item.id">
-            <option value="{{item.nom}}"></option>
-        </div>
-        
-        <div v-if="!valider"> 
-            <button class="btn btn-outline-danger"><i class="bi bi-x-circle-fill"></i></button>
-        </div>
-        -->
+    <div class="list-group-item d-flex align-items-center py-1">
+        <div class="badge text-bg-secondary rounded-pill border-right border-secondary me-3">{{ getTwoDigit(periode.period_day)}}/{{getTwoDigit(periode.period_month)}}/{{periode.period_year}}</div>
+        <div>{{getCodageNom()}}</div>
     </div>
 </template>
 
@@ -28,16 +11,12 @@
 export default {
     props: {
         periode: Object,
-        declarations: Array,
+        absence: Object,
+        declaration: Object,
         codages: Array,
-        valider: String,
     },
 
     methods: {
-
-
-
-
         /**
          * Pour afficher les jours et mois avec deux chiffres
          * @param {Number} number 
@@ -61,17 +40,23 @@ export default {
          */
         getCodageNom() {
             
-            let codage = this.codages.find((codage) => codage.id === this.declarations.gta__codage_id);
-            return codage.nom;
+            let codage = this.codages.find((codage) => codage.id === this.declaration.gta__codage_id);
+
+            if (codage) {
+                return codage.nom;
+            }
+            else {
+                return this.declaration.gta__codage_id;
+            }
         }
 
 
     },
 
     mounted() {
-        console.log(this.periode);
-        console.log(this.declarations);
-        console.log(this.codages);
+        // console.log(this.periode);
+        // console.log(this.declarations);
+        // console.log(this.codages);
 
     }
 }
