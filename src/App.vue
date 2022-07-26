@@ -32,6 +32,7 @@
 
 		<template v-slot:list>
 			<AppMenu v-if="$route.name == 'validation'">
+				<ValidationItem v-for="absence in absences_validation" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
 				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
@@ -69,6 +70,7 @@ import AppMenuItem from '@/components/pebble-ui/AppMenuItem.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 import CONFIG from "@/config.json"
+import ValidationItem from './components/ValidationItem.vue'
 
 export default {
 
@@ -85,13 +87,20 @@ export default {
 	},
 
 	computed: {
-		...mapState(['elements', 'openedElement']),
+		...mapState(['elements', 'openedElement', 'absences_validation']),
 		...mapGetters(['primary_personnel'])
 	},
 
 	watch: {
-		$route() {
+		$route(to,from) {
 			this.$app.dispatchEvent('menuChanged', 'list');
+			if(to.name !== from.name && to.name == "validation"){
+				this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`)
+				.then ((data) => {
+					this.$store.commit('absences_validation', data);
+				})
+				.catch (this.$app.catchError)
+			}
 		}
 	},
 
@@ -167,7 +176,8 @@ export default {
 	components: {
 		AppWrapper,
 		AppMenu,
-		AppMenuItem
+		AppMenuItem,
+		ValidationItem
 	},
 
 	mounted() {
