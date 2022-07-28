@@ -18,7 +18,6 @@
                                 <label class="form-label">{{formatDateFr(abs.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(abs.df)}}</label>
                                 <label class="form-label">demande du {{formatDateFr(abs.dd)}} à </label>
                             </div>
-                            
                         </div>
                     </div>
                 </div>

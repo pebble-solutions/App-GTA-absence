@@ -32,7 +32,7 @@
 
 		<template v-slot:list>
 			<AppMenu v-if="$route.name == 'validation'">
-				<ValidationItem v-for="absence in absences_validation" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
+				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
 				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
@@ -74,6 +74,8 @@ import ValidationItem from './components/ValidationItem.vue'
 
 export default {
 
+	inheritAttrs: false,
+
 	data() {
 		return {
 			cfg: CONFIG.cfg,
@@ -83,11 +85,12 @@ export default {
 				elements: true
 			},
 			isConnectedUser: false
+		
 		}
 	},
 
 	computed: {
-		...mapState(['elements', 'openedElement', 'absences_validation']),
+		...mapState(['elements', 'openedElement', 'absences']),
 		...mapGetters(['primary_personnel'])
 	},
 
@@ -97,7 +100,7 @@ export default {
 			if(to.name !== from.name && to.name == "validation"){
 				this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`)
 				.then ((data) => {
-					this.$store.commit('absences_validation', data);
+					this.$store.commit('absences', data);
 				})
 				.catch (this.$app.catchError)
 			}

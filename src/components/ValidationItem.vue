@@ -4,17 +4,17 @@
 		<div class="d-flex align-items-center">
 			<i class="bi" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
 			<div class="d-flex flex-column ms-3">
-				<p>Prénom Nom {{absence.structure__personnel_id}}<br> {{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}} </p>
+				<p>Personnel {{absence.structure__personnel_id}}<br> {{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}} </p>
 				
 			</div>
 		</div>
 		<ValidationStatus :absence="absence" classPrefix="badge text-bg-"/>
     </a>
-		<div class="bg-light">{{absence}}</div>
 
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import ValidationStatus from './ValidationStatus.vue';
 //import dateAndTime from 'date-and-time';
 
@@ -27,12 +27,14 @@ export default {
     data() {
 		return {
 			isChecked: false,
+			pending: false
         };
     },
-
+	
     components: { ValidationStatus },
 
 	methods: {
+		...mapActions (["addAbsenceValidation", "removeAbsenceValidation"]),
 
 		/**
 		 * Converti une date fourni au format francophone DD/MM/YYYY
@@ -52,6 +54,19 @@ export default {
 		 */
 		toggleSelection() {
 			this.isChecked = !this.isChecked;
+
+			if(this.isChecked) {
+				this.pending = true;
+				
+				this.addAbsenceValidation ({absence: this.absence, app: this.$app})
+				.catch(this.$app.catchError)
+				.finally(() => {
+					this.pending = false;
+				});
+
+			} else {
+				this.removeAbsenceValidation({absence: this.absence, app: this.$app});
+			}
 		}
 	},
 }
