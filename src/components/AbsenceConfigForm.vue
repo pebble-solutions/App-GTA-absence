@@ -13,7 +13,7 @@
     
         <div class="my-2">
             <label for="manager" class="form-label">Demander la validation à</label>
-            <select name="manager" id="manager" class="form-select" v-model="absenceTarget.validation_personne_id">
+            <select name="manager" id="manager" class="form-select" v-model="absenceTarget.validation_personne_id" required>
                 <option v-for="manager in managers" :key="manager.id" :value="manager.id"> {{manager.cache_nom}} </option>
             </select>
         </div>

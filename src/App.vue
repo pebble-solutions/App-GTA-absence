@@ -8,7 +8,7 @@
 		@auth-change="setLocal_user">
 
 		<template v-slot:header>
-			<div class="mx-2 d-flex align-items-center" v-if="openedElement">
+			<div class="mx-2 d-flex align-items-center d-none d-md-block" v-if="openedElement">
 				<router-link to="/" custom v-slot="{ navigate, href }">
 					<a class="btn btn-dark me-2" :href="href" @click="navigate">
 						<i class="bi bi-arrow-left"></i>
@@ -35,7 +35,7 @@
 				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
-				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -85,7 +85,6 @@ export default {
 				elements: true
 			},
 			isConnectedUser: false
-		
 		}
 	},
 
@@ -190,6 +189,7 @@ export default {
 			this.switchStructure(structureId);
 		});
 
+		console.log(this.$store);
 	}
 
 }

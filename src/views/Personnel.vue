@@ -40,7 +40,6 @@ import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
 
 export default {
-
     data() {
         return {
             pending: {
