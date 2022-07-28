@@ -1,5 +1,6 @@
 <template>
-    <span :class="statusClass">{{statusLabel}}</span>
+    <span class="d-none d-md-block" :class="statusClass">{{statusLabel}}</span>
+    <i class="bi d-block d-md-none" :class="statusIconClass"></i>
 </template>
 
 <script>
@@ -24,13 +25,22 @@ export default {
         },
 
         /**
+         * retourne la classe CSS de l'icon à appliquer en fonction de la propriété valider
+         * de l'absence
+         * @returns {String}
+         */
+        statusIconClass () {
+            return this.classPrefix+this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle']);
+        },
+
+        /**
          * retourne le libellé du statut en fonction de la propriété valider
          * de l'absence
          * @returns {String}
          */
         statusLabel() {
             return this.getStringFromStatusArray(['Validée', 'Refusée', 'En attente']);
-        }
+        },
     },
 
     methods: {
