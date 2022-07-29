@@ -5,7 +5,7 @@
         <div class="my-3 lead" :class="actionClass">{{actionLabel}}</div>
 
         <div class="my-3">
-            <label for="commentaire_n1" class="form-label">Commenteur valideur</label>
+            <label for="commentaire_n1" class="form-label">Commentaire valideur</label>
             <textarea name="commentaire_n1" id="commentaire_n1" rows="5" class="form-control" v-model="commentaire_n1"></textarea>
         </div>
 

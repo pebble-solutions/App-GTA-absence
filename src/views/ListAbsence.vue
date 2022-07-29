@@ -86,7 +86,6 @@ export default {
     },
 
             /**copié dans le modèle
-             
             beforeRouteUpdate(to) {
                 this.load(to.params.id);
             },

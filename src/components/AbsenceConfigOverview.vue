@@ -34,8 +34,8 @@
                 <button class="w-50 ms-1 btn btn-danger" @click.prevent="$emit('refuse')" :disabled="absence.valider == 'NON'">Refuser</button>
             </div>
 
-            <div class="text-center mt-2 text-secondary" v-if="absence.valider">Le status de validation est déjà renseigné. Une modification annulera les informations 
-                déjà enregistées.
+            <div class="text-center mt-2 text-secondary" v-if="absence.valider">Le statut de validation est déjà renseigné. Une modification annulera les informations 
+                précédemment enregistrées.
             </div>
 
         </div>

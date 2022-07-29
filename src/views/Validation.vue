@@ -1,7 +1,9 @@
 <template>
-    <h1 class="m-3">Demandes d'absence en attente</h1>
+    <h1 class="py-2">Demandes d'absence en attente</h1>
+
     <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-3">
         <div class="card-body">
+            Personnel: {{abs.absence.structure__personnel_id}}
             <AbsenceConfigOverview 
                 :absence="abs.absence" 
                 :codages="abs.codages" 
@@ -15,31 +17,52 @@
 
     
 
-    <div class="card d-flex flex-row align-items-center justify-content-between">
-        <div class="ms-2">Pour la sélection:</div>
-        <div class="d-grid gap-2 d-flex justify-content-end me--2">
-            <a href="">
-                <div class="btn btn-lg btn-success">Autoriser</div>
-            </a>
-            <a href="">
-                <div class="btn btn-lg  btn-danger">Refuser</div>
-            </a>
+    <div class="d-flex flex-column align-items-center justify-content-center bg-light limitWidth" v-if="absences_validation.length">
+        <div class="pt-2">Pour la sélection:</div>
+        <div class="d-flex gap-2 py-3">
+            <button class="btn btn-lg btn-success" @click.prevent="setActionRoute('authorize')">
+                Autoriser
+            </button>
+            <button class="btn btn-lg btn-danger" @click.prevent="setActionRoute('refuse')">
+                Refuser
+            </button>
         </div>
-    
     </div>
+
+    <AppModal id="validation" title="Validation" :display="validation_modal" :footer="false" backdrop="static">
+        <AbsenceValidation 
+            :absences="absences_validation"
+            :validation_action="validation_action"
+
+            @recorded="refreshAbsencesAndClose"
+            @cancel="closeValidationModal"
+            />
+    </AppModal>
     
 </template>
 <script>
 
 import { mapState } from 'vuex';
 import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
+import AppModal from '../components/pebble-ui/AppModal.vue';
+import AbsenceValidation from '../components/AbsenceValidation.vue';
 
 
 export default {
     inheritAttrs: false,
+
+    data() {
+        return {
+            validation_action: true,
+            validation_modal: false,
+            modal: null
+        }
+    },
+
     computed: {
         ...mapState(["absences_validation"])
     },
+
     methods: {
         /**
          * Converti une date fourni au format francophone DD/MM/YYYY
@@ -52,11 +75,70 @@ export default {
             let newDate = new Date(date);
             let format = newDate.toLocaleDateString("fr-FR");
             return format;
+        },
+
+        refreshAbsencesAndClose(absences){
+            this.closeValidationModal();
+            return absences;
+        },
+
+        closeValidationModal() {
+            this.validation_modal = false;
+        },
+
+        checkRouteMode(action){
+            console.log(action)
+            if(action == 'authorize' || action == 'refuse') {
+                this.validation_action = action == 'authorize' ? true : false;
+                this.validation_modal = true;
+            } else {
+                this.validation_modal = false;
+            }
+        },
+
+        setActionRoute(action) {
+            this.$router.push('/validation/'+action)
         }
     },
-    components: { AbsenceConfigOverview }
+
+    components: { AbsenceConfigOverview, AppModal, AbsenceValidation },
+
+    beforeRouteUpdate(to) {
+        console.log(to)
+        this.checkRouteMode(to.params.action);
+    },
+
+    mounted(){
+        this.checkRouteMode(this.$route.params.action);
+
+        this.modal = document.getElementById('validationModal');
+        this.modal.addEventListener ('hidden.bs.modal', () => {
+            this.$router.push('/validation');
+        });
+    }
 }
 
 </script>
+<style lang ="scss" scoped>
+.limitWidth {   
+    position: fixed;
+    bottom: 0px;
+    z-index: 500;
+    box-sizing: border-box;
+    right: 0px;
+    left:0px;
+}
+@media (min-width: 576px) {
+    .limtiWidth {
+        left: 52px;
+    }
+}
+@media (min-width :1024px) {
+
+    .limitWidth {
+        left: 402px;
+    }
+}
+</style>
 
 

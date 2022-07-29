@@ -25,7 +25,7 @@ const routes = [
     ]
   },
   {
-    path: '/validation',
+    path: '/validation/:action?',
     name: 'validation',
     component: () => import(/* webpackChunkName: "about" */ '../views/Validation.vue'),
     // children: [
