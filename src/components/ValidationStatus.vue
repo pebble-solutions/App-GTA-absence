@@ -30,7 +30,7 @@ export default {
          * @returns {String}
          */
         statusIconClass () {
-            return this.classPrefix+this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle']);
+            return 'text-'+this.getStringFromStatusArray(['success', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle']);
         },
 
         /**

@@ -4,44 +4,27 @@
             <div>
                 {{formatDateFr(absence.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(absence.df)}}
             </div>
-            <div>
-                <div class="text-warning" v-if="absence.valider === null">
-                    <span class="d-none d-md-block">En attente</span>
-                    <i class="bi bi-circle d-block d-md-none"></i>
-                </div>
 
-                <div class="text-success" v-else-if="absence.valider === 'OUI'">
-                    <span class="d-sm-none">Validée</span>
-                    <i class="bi bi-check-circle"></i>
-                </div>
-
-                <div class="text-danger" v-else>
-                    <span v-if="this.winWidth > 576">Refusée</span>
-                    <span v-else><i class="bi bi-x-circle fs-2"></i></span>
-                </div>
-            </div>
+            <ValidationStatus :absence="absence" classPrefix="badge text-bg-"></ValidationStatus>
         </a>
     </router-link>
 </template>
 
 <script>
+import ValidationStatus from './ValidationStatus.vue';
 
 export default {
     props: {
         absence: Object
     },
-
     methods: {
-
         formatDateFr(date) {
-
             let newDate = new Date(date);
-            let format = newDate.toLocaleDateString('fr-FR');
+            let format = newDate.toLocaleDateString("fr-FR");
             return format;
-        }        
-
-    }
-
+        }
+    },
+    components: { ValidationStatus }
 }
 
 
