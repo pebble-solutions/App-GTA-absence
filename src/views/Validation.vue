@@ -1,7 +1,8 @@
 <template>
     <h1 class="py-2">Demandes d'absence en attente</h1>
+        <!--<div class="card-body">Pour traiter</div> -->
 
-    <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-3">
+    <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-4">
         <div class="card-body">
             Personnel: {{abs.absence.structure__personnel_id}}
             <AbsenceConfigOverview 
@@ -17,7 +18,7 @@
 
     
 
-    <div class="d-flex flex-column align-items-center justify-content-center bg-light limitWidth" v-if="absences_validation.length">
+    <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" v-if="absences_validation.length">
         <div class="pt-2">Pour la sélection:</div>
         <div class="d-flex gap-2 py-3">
             <button class="btn btn-lg btn-success" @click.prevent="setActionRoute('authorize')">
@@ -28,10 +29,23 @@
             </button>
         </div>
     </div>
+    <div v-else class="card m-4"> 
+        <div class="card-header">
+            <h2>Traitement des demandes:</h2>
+        </div>
+        <div class="card-body bg-warning">
+            <ul class="text-light">
+                <li > Sélectionnez d'un clic les demandes à traiter dans la liste</li>
+                <li > Autorisez ou refusez les demandes sélectionnées</li>
+                <li > Commentez votre décision</li>
+                <li > Validez</li>
+            </ul>
+        </div>
+    </div>
 
     <AppModal id="validation" title="Validation" :display="validation_modal" :footer="false" backdrop="static">
         <AbsenceValidation 
-            :absences="absences_validation"
+            :absences="absences"
             :validation_action="validation_action"
 
             @recorded="refreshAbsencesAndClose"
@@ -55,12 +69,21 @@ export default {
         return {
             validation_action: true,
             validation_modal: false,
-            modal: null
+            modal: null,
+            
         }
     },
 
     computed: {
-        ...mapState(["absences_validation"])
+        ...mapState(["absences_validation"]),
+
+        absences() {
+            let absences = [];
+            this.absences_validation.forEach(a => {
+                absences.push(a.absence);
+            });
+            return absences;
+        }
     },
 
     methods: {
@@ -76,11 +99,20 @@ export default {
             let format = newDate.toLocaleDateString("fr-FR");
             return format;
         },
-
+        /**
+         * ferme la modal de validation et supprime les absences sélectionnées
+         * @param {Object} absences la liste des absences à autoriser ou refuser // a valider avec Guillaume
+         */
         refreshAbsencesAndClose(absences){
+            this.$store.commit ('refresh_absences', absences);
             this.closeValidationModal();
-            return absences;
         },
+
+        // refreshDatas(payload) {
+        //     for (const key in payload) {
+        //         this[key] = payload[key];
+        //     }
+        // },
 
         closeValidationModal() {
             this.validation_modal = false;
@@ -115,6 +147,7 @@ export default {
         this.modal.addEventListener ('hidden.bs.modal', () => {
             this.$router.push('/validation');
         });
+        console.log(AbsenceValidation);
     }
 }
 

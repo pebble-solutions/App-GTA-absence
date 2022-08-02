@@ -17,8 +17,8 @@
             <div class="card my-3">
                 <div class="card-body">
                     <h2>Toutes les demandes d'absence</h2>
-
                     <Spinner v-if="pending.absences"></Spinner>
+                    <div v-else-if="!pending.absences && !absences.length" class="alert alert-info">TTT</div>
                 </div>
                 <div class="list-group list-group-flush" v-if="!pending.absences">
                     <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />

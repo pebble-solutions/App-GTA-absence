@@ -26,7 +26,7 @@
 		<template v-slot:menu>
 			<AppMenu>
 				<AppMenuItem href="/" look="dark" icon="bi bi-people">Mon personnel</AppMenuItem>
-				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Absence à valider</AppMenuItem>
+				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Absence à valider <span class="badge bg-secondary float-end">12</span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -35,7 +35,7 @@
 				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
-				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}} <i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
 			</AppMenu>
 		</template>
 

@@ -74,6 +74,8 @@ export default {
             })
             .then((data) => {
                 this.$emit('recorded', data);
+                console.log('absences_ids', absences_ids);
+                //absences_ids = [];
             })
             .catch(this.$app.catchError)
             .finally(() => {

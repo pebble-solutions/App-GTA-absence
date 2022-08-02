@@ -82,7 +82,7 @@ export default {
     mounted() {
 
         this.DisplayList();
-        console.log('opende',this.openedElement);
+        console.log('opened',this.openedElement);
     },
 
             /**copié dans le modèle

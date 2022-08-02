@@ -163,6 +163,31 @@ export default createStore({
 
 		absences (state, absences) {
 			state.absences = absences;
+		},
+
+		/**
+		 * met à jour les données des absen,ces stockées dans le state.
+		 * Pour chaque absence, si l'id existe déjà dans le state,
+		 * les informations sont mises à jour.
+		 * dans le cas contraire la nouvelle absence est ajoutée à la
+		 * fin du state absences.
+		 * 
+		 * @param {Object} state le state de vuex
+		 * @param {Array} absences les absences à mettre à jour dans le state 
+		 */
+		refresh_absences(state, absences) {
+			absences.forEach(absence => {
+				let stateAbsence = state.absences.find (a => a.id === absence.id);
+				if (stateAbsence) {
+					for (const key in absence) {
+						stateAbsence[key] = absence [key];
+					}
+				}
+				else {
+					state.absences.push (absence);
+				}
+			});
+
 		}
 	},
 	actions: {
@@ -311,7 +336,7 @@ export default createStore({
 			.then((data) => {
 				let abs = data.result;
 				absenceData = {
-					absence: abs.absence[0],
+					absence: absence,
 					codages: abs.codage,
 					declarations: abs.declaration,
 					periodes: abs.periode

@@ -117,7 +117,7 @@ export default {
         },
 
         /**
-         * Met à jour les données stockées. Si une clée n'est pas disponible, data n'est pas modifié.
+         * Met à jour les données stockées. Si une clé n'est pas disponible, data n'est pas modifié.
          * 
          * @param {Object} payload L'ensemble des données à mettre à jour
          * - periodes
