@@ -26,7 +26,7 @@
 		<template v-slot:menu>
 			<AppMenu>
 				<AppMenuItem href="/" look="dark" icon="bi bi-people">Mon personnel</AppMenuItem>
-				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Absence à valider <span class="badge bg-secondary float-end">12</span> </AppMenuItem>
+				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Demande d'absence à traiter <span class="badge bg-secondary float-end">12</span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -100,9 +100,11 @@ export default {
 				this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`)
 				.then ((data) => {
 					this.$store.commit('absences', data);
+					console.log ('absences', data);
 				})
 				.catch (this.$app.catchError)
 			}
+				
 		}
 	},
 

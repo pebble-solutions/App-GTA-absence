@@ -1,58 +1,60 @@
 <template>
-    <h1 class="py-2">Demandes d'absence en attente</h1>
-        <!--<div class="card-body">Pour traiter</div> -->
+    <div class="container">
+        <h1 class="py-2">Demandes d'absence en attente</h1>
+            <!--<div class="card-body">Pour traiter</div> -->
 
-    <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-4">
-        <div class="card-body">
-            Personnel: {{abs.absence.structure__personnel_id}}
-            <AbsenceConfigOverview 
-                :absence="abs.absence" 
-                :codages="abs.codages" 
-                :declarations="abs.declarations" 
-                :editable="false" 
-                :managers="abs.managers" 
-                :periodes="abs.periodes"
-                :toolbar="false"/>
+        <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-4">
+            <div class="card-body">
+                Personnel: {{abs.absence.structure__personnel_id}}
+                <AbsenceConfigOverview 
+                    :absence="abs.absence" 
+                    :codages="abs.codages" 
+                    :declarations="abs.declarations" 
+                    :editable="false" 
+                    :managers="abs.managers" 
+                    :periodes="abs.periodes"
+                    :toolbar="false"/>
+            </div>
         </div>
-    </div>
 
-    
+        
+        <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" ></div>
 
-    <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" v-if="absences_validation.length">
-        <div class="pt-2">Pour la sélection:</div>
-        <div class="d-flex gap-2 py-3">
-            <button class="btn btn-lg btn-success" @click.prevent="setActionRoute('authorize')">
-                Autoriser
-            </button>
-            <button class="btn btn-lg btn-danger" @click.prevent="setActionRoute('refuse')">
-                Refuser
-            </button>
+        <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" v-if="absences_validation.length">
+            <div class="pt-2">Pour la sélection:</div>
+            <div class="d-flex gap-2 py-3">
+                <button class="btn btn-lg btn-success" @click.prevent="setActionRoute('authorize')">
+                    Autoriser
+                </button>
+                <button class="btn btn-lg btn-danger" @click.prevent="setActionRoute('refuse')">
+                    Refuser
+                </button>
+            </div>
         </div>
-    </div>
-    <div v-else class="card m-4"> 
-        <div class="card-header">
-            <h2>Traitement des demandes:</h2>
+        <div v-else class="card"> 
+            <div class="card-header">
+                <h2>Traitement des demandes:</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush list-group-numbered">
+                    <li class ="list-group-item"> Sélectionnez d'un clic les demandes à traiter dans la liste</li>
+                    <li class ="list-group-item"> Autorisez ou refusez les demandes sélectionnées</li>
+                    <li class ="list-group-item"> Commentez votre décision</li>
+                    <li class ="list-group-item"> Validez</li>
+                </ul>
+            </div>
         </div>
-        <div class="card-body bg-warning">
-            <ul class="text-light">
-                <li > Sélectionnez d'un clic les demandes à traiter dans la liste</li>
-                <li > Autorisez ou refusez les demandes sélectionnées</li>
-                <li > Commentez votre décision</li>
-                <li > Validez</li>
-            </ul>
-        </div>
-    </div>
 
-    <AppModal id="validation" title="Validation" :display="validation_modal" :footer="false" backdrop="static">
-        <AbsenceValidation 
-            :absences="absences"
-            :validation_action="validation_action"
+        <AppModal id="validation" title="Validation" :display="validation_modal" :footer="false" backdrop="static">
+            <AbsenceValidation 
+                :absences="absences"
+                :validation_action="validation_action"
 
-            @recorded="refreshAbsencesAndClose"
-            @cancel="closeValidationModal"
-            />
-    </AppModal>
-    
+                @recorded="refreshAbsencesAndClose"
+                @cancel="closeValidationModal"
+                />
+        </AppModal>
+    </div>  
 </template>
 <script>
 
@@ -105,6 +107,9 @@ export default {
          */
         refreshAbsencesAndClose(absences){
             this.$store.commit ('refresh_absences', absences);
+            console.log ('avant refresh', absences);
+            
+            console.log('refresh', absences);
             this.closeValidationModal();
         },
 
@@ -170,8 +175,10 @@ export default {
 
     .limitWidth {
         left: 402px;
+        max-width :1306px;
     }
 }
+
 </style>
 
 

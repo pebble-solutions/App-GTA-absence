@@ -1,11 +1,10 @@
 <template>
-    <a href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
+    <a v-if="!absence.valider" href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
 		:class="{active: isChecked}">
 		<div class="d-flex align-items-center">
 			<i class="bi" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
 			<div class="d-flex flex-column ms-3">
 				<p>Personnel {{absence.structure__personnel_id}}<br> {{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}} </p>
-				
 			</div>
 		</div>
 		<ValidationStatus :absence="absence" classPrefix="badge text-bg-"/>

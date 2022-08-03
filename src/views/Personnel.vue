@@ -13,15 +13,16 @@
                     <AbsenceForm @add-absence="addAbsence" @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
                 </div>
             </div>
-
             <div class="card my-3">
                 <div class="card-body">
-                    <h2>Toutes les demandes d'absence</h2>
+                    <h2 class="mb-3">Toutes les demandes d'absence</h2>
                     <Spinner v-if="pending.absences"></Spinner>
-                    <div v-else-if="!pending.absences && !absences.length" class="alert alert-info">TTT</div>
-                </div>
-                <div class="list-group list-group-flush" v-if="!pending.absences">
-                    <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
+                    <div v-else-if="!pending.absences && !absences.length">
+                        <AlertMessage :icon="bi-arrow-clockwise" :variant="primary"/>
+                    </div>
+                    <div class="list-group list-group-flush" v-if="!pending.absences">
+                        <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,6 +39,7 @@ import {mapState} from 'vuex';
 import AbsenceItem from '../components/AbsenceItem.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
+import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
 
 export default {
     data() {
@@ -61,7 +63,8 @@ export default {
     components: {
         AbsenceItem,
         Spinner,
-        AbsenceForm
+        AbsenceForm,
+        AlertMessage
     },
 
     methods: {

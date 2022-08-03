@@ -1,5 +1,5 @@
 <template>
-	<div class="py-2" v-if="$store.state.login">
+	<div class="container py-2" v-if="$store.state.login">
 		<h1 class="text-center">Gestion des absences</h1>
 		<hr>
 		
