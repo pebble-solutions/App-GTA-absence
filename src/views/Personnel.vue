@@ -18,7 +18,7 @@
                     <h2 class="mb-3">Toutes les demandes d'absence</h2>
                     <Spinner v-if="pending.absences"></Spinner>
                     <div v-else-if="!pending.absences && !absences.length">
-                        <AlertMessage :icon="bi-arrow-clockwise" :variant="primary"/>
+                        <AlertMessage icon="bi-arrow-clockwise" variant="danger">Pas de demandes d'absence en cours</AlertMessage>
                     </div>
                     <div class="list-group list-group-flush" v-if="!pending.absences">
                         <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />

@@ -18,8 +18,6 @@
         </div>
 
         
-        <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" ></div>
-
         <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" v-if="absences_validation.length">
             <div class="pt-2">Pour la sélection:</div>
             <div class="d-flex gap-2 py-3">
@@ -31,6 +29,7 @@
                 </button>
             </div>
         </div>
+        
         <div v-else class="card"> 
             <div class="card-header">
                 <h2>Traitement des demandes:</h2>
@@ -44,6 +43,7 @@
                 </ul>
             </div>
         </div>
+        
 
         <AppModal id="validation" title="Validation" :display="validation_modal" :footer="false" backdrop="static">
             <AbsenceValidation 
@@ -107,8 +107,14 @@ export default {
          */
         refreshAbsencesAndClose(absences){
             this.$store.commit ('refresh_absences', absences);
+            this.absences_validation.forEach((absence, index) => {
+                if(absence.absence.valider == "OUI") {
+                    this.absences_validation.splice(index ,1)
+                }
+            });
             console.log ('avant refresh', absences);
-            
+            console.log('absence',absences);
+            console.log('absenceValidation', this.absences_validation);
             console.log('refresh', absences);
             this.closeValidationModal();
         },

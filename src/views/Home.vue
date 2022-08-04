@@ -5,35 +5,61 @@
 		
 
 		<div class="row">
-			<div class="col">
-				<div class="card">
-					<div class="card-body">
-						<h3 class="text-center list-group-item m-0">Alertes</h3>
-					</div>
-					<div class="list-group list-group-flush">
-						<a href="#" class="list-group-item list-group-item-action text-center">
-							<div>En attente validation: X</div>
-						</a>
-						<a href="#" class="list-group-item list-group-item-action text-center">
-							<div> À valider (n+1): Y</div>
-						</a>
-						<a href="#" class="list-group-item list-group-item-action text-center">
-							<div>À traiter (RH/paie): Z</div>
-						</a>
-					</div>
+			<div class="card my-3">
+				<div class="card-body">
+					<h3 class="text-center list-group-item m-0">Alertes</h3>
+				</div>
+				<div class="list-group list-group-flush">
+					<a href="#" class="list-group-item list-group-item-action">
+						<div><span class="badge bg-secondary fs-6">12</span> demandes en attente validation (perso)</div>
+					</a>
+					<a href="#" class="list-group-item list-group-item-action">
+						<div><span class="badge bg-secondary fs-6">12</span> demandes  à traiter (if n+1)</div>
+					</a>
+					<a href="#" class="list-group-item list-group-item-action">
+						<div><span class="badge bg-secondary fs-6">12</span> demandes à traiter (if RH)</div>
+					</a>
 				</div>
 			</div>
 
-			<div class="col">
-				<div class="card">
-					<div class="card-body">
-						<h3 class="text-center list-group-item m-0">Compteurs</h3>
+			<div class="card">
+				<h3 class="list-group-item text-center">Compteurs</h3>
+
+				
+
+					
+				<div class="card-group">
+					<div class="card">
+						<p class="card-header">Matricule</p>
+						<div class="list-group list-group-flush">
+							<div class="list-group-item">congés acquis: X</div>
+							<div class="list-group-item">congés pris: Y</div>
+							<div class="list-group-item">SOLDE: Z</div>
+						</div>
 					</div>
-					<div class="list-group list-group-flush">
-						<div class="list-group-item text-center">congés acquis: X</div>
-						<div class="list-group-item text-center">congés pris: Y</div>
-						<div class="list-group-item text-center text-primary">SOLDE: Z</div>
-						
+					<div class="card">
+						<p class="card-header">Matricule</p>
+						<div class="list-group list-group-flush">
+							<div class="list-group-item">congés acquis</div>
+							<div class="list-group-item">congés pris</div>
+							<div class="list-group-item">SOLDE</div>
+						</div>
+					</div>
+					<div class="card">
+						<p class="card-header">Matricule</p>
+						<div class="list-group list-group-flush">
+							<div class="list-group-item">congés acquis</div>
+							<div class="list-group-item">congés pris</div>
+							<div class="list-group-item">SOLDE</div>
+						</div>
+					</div>
+					<div class="card">
+						<p class="card-header">Matricule</p>
+						<div class="list-group list-group-flush">
+							<div class="list-group-item">CP acquis</div>
+							<div class="list-group-item">CP pris</div>
+							<div class="list-group-item">SOLDE: Z</div>
+						</div>
 					</div>
 				</div>
 			</div>
