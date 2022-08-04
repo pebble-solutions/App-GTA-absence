@@ -108,14 +108,10 @@ export default {
         refreshAbsencesAndClose(absences){
             this.$store.commit ('refresh_absences', absences);
             this.absences_validation.forEach((absence, index) => {
-                if(absence.absence.valider == "OUI") {
+                if(absence.absence.valider == "OUI" || absence.absence.valider == "NON") {
                     this.absences_validation.splice(index ,1)
                 }
             });
-            console.log ('avant refresh', absences);
-            console.log('absence',absences);
-            console.log('absenceValidation', this.absences_validation);
-            console.log('refresh', absences);
             this.closeValidationModal();
         },
 
