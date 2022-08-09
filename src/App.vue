@@ -26,7 +26,7 @@
 		<template v-slot:menu>
 			<AppMenu>
 				<AppMenuItem href="/" look="dark" icon="bi bi-people">Mon personnel</AppMenuItem>
-				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Demande d'absence à traiter <span class="badge bg-secondary float-end">12</span> </AppMenuItem>
+				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Demande d'absence à valider <span class="badge float-end" :class="{'bg-warning': absences.length > 0,'bg-secondary':absences.length == 0}">{{absences.length}}</span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -94,17 +94,8 @@ export default {
 	},
 
 	watch: {
-		$route(to,from) {
+		$route() {
 			this.$app.dispatchEvent('menuChanged', 'list');
-			if(to.name !== from.name && to.name == "validation"){
-				this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`)
-				.then ((data) => {
-					this.$store.commit('absences', data);
-					console.log ('absences', data);
-				})
-				.catch (this.$app.catchError)
-			}
-				
 		}
 	},
 
@@ -165,13 +156,35 @@ export default {
 					 * - L'utilisateur est connecté à la structure de rattachement de son primary_personnel
 					 */
 					if (this.primary_personnel) {
+						this.loadAbsencesValidation();
 						this.$router.push('/personnel/'+this.primary_personnel.id);
+						console.log('switch');
 					}
 					else {
 						this.$router.push('/');
 					}
 				});
 			}
+		},
+
+		/**
+		 * charge les absences à valider si l'utilisateur connecte
+		 * est mamager
+		 */
+		loadAbsencesValidation(){
+			console.log('load', this.primary_personnel);
+			this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`, {
+				valider: 'null'
+			})
+			.then ((data) => {
+				this.$store.commit('absences', data);
+				console.log(data);
+			})
+			.catch (this.$app.catchError)
+			.finally(() => {
+				console.log('finally');
+			});
+			console.log('qqechose');
 		},
 
 		...mapActions(['closeElement'])
@@ -189,12 +202,12 @@ export default {
 		
 		this.$app.addEventListener('structureChanged', (structureId) => {
 			this.switchStructure(structureId);
+			console.log('text');
 		});
 
 		this.$app.addEventListener('beforeClearAuth', () => {
 			this.$router.push('/');
 		});
-
 	}
 
 }
