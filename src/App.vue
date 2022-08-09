@@ -177,6 +177,10 @@ export default {
 			this.switchStructure(structureId);
 		});
 
+		this.$app.addEventListener('beforeClearAuth', () => {
+			this.$router.push('/');
+		});
+
 	}
 
 }
