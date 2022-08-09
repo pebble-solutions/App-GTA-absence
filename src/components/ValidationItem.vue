@@ -1,5 +1,5 @@
 <template>
-    <a v-if="!absence.valider" href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
+    <a href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
 		:class="{active: isChecked}">
 		<div class="d-flex align-items-center">
 			<i class="bi" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
