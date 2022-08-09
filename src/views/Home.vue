@@ -2,13 +2,18 @@
 	<div class="container py-2" v-if="$store.state.login">
 		<h1 class="text-center">Gestion des absences</h1>
 		<hr>
-		
+                <div class="card-body">
+					Absence form ici?
+                    <!-- <AbsenceForm @add-absence="addAbsence" @absence-recorded="routeToAbsenceConfig"></AbsenceForm> -->
+                </div>
+		<!-- <div v-if="openedElement.primary === true" class="card my-3">
+		</div> -->
+		<div class="card mb-3">
+			<div class="card-body">
+			<h3 class="card-title">Mes infos</h3>
 
-		<div class="row">
-			<div class="card mb-3">
-				<h3 class="card-header">Mes infos</h3>
-				<div class="card-body">
-					<div class="card-group">
+				<div class="row row-cols-1 row-cols-sm-2 g-4">
+					<div class="col">
 						<div class="card">
 							<div class="card-header">En cours</div>
 							<div class="list-group list-group-flush">
@@ -23,6 +28,8 @@
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="col">
 						<div class="card">
 							<div class="card-header">Mon compteur</div>
 
@@ -41,128 +48,120 @@
 					</div>
 				</div>
 			</div>
-			<div class="card mb-3">
-				<h3 class="card-header">Mon équipe</h3>
-
+		</div>
+		<div class="card mb-3">
 			<div class="card-body">
-					<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-						<!-- <div class="card">
-							<p class="card-header">Matricule</p>
+			<h3 class="card-title">Mon équipe</h3>
+
+				<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Killian</div>
 							<div class="list-group list-group-flush">
-								<div class="list-group-item">congés acquis: X</div>
-								<div class="list-group-item">congés pris: Y</div>
-								<div class="list-group-item">SOLDE: </div>
-							</div>
-						</div> -->
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Killian</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-danger fs-6">24</span>
-									</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-danger fs-6">24</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Guillaume</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">12</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">12</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">0</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Guillaume</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">12</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">12</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">0</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Sébastien</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Sébastien</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Sébastien</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Sébastien</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Sébastien</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Sébastien</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Sébastien</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Sébastien</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<div class="card">
-								<div class="card-header">Sébastien</div>
-								<div class="list-group list-group-flush">
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
-									</div>
-									<div class="d-flex justify-content-between list-group-item">
-										<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
-									</div>
+					</div>
+					<div class="col">
+						<div class="card">
+							<div class="card-header">Sébastien</div>
+							<div class="list-group list-group-flush">
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP acquis </span><span class="badge bg-secondary fs-6">24</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>CP pris </span><span class="badge bg-secondary fs-6">0</span>
+								</div>
+								<div class="d-flex justify-content-between list-group-item">
+									<span>SOLDE </span><span class="badge bg-success fs-6">OCT</span>
 								</div>
 							</div>
 						</div>

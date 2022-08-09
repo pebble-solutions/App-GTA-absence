@@ -18,13 +18,13 @@
         </div>
 
         
-        <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg p-3 mb-4 mx-4 bg-body rounded limitWidth" v-if="absences_validation.length">
-            <div class="pt-2">Pour la sélection:</div>
-            <div class="d-flex gap-2 py-3">
-                <button class="btn btn-lg btn-success" @click.prevent="setActionRoute('authorize')">
+        <div class="d-flex flex-column align-items-center justify-content-center bg-light shadow-lg mb-3 mx-2 bg-body rounded limitWidth" v-if="absences_validation.length">
+            <div class="pt-1">Pour la sélection:</div>
+            <div class="d-flex gap-4 pb-2">
+                <button class="btn btn-success" @click.prevent="setActionRoute('authorize')">
                     Autoriser
                 </button>
-                <button class="btn btn-lg btn-danger" @click.prevent="setActionRoute('refuse')">
+                <button class="btn btn-danger" @click.prevent="setActionRoute('refuse')">
                     Refuser
                 </button>
             </div>
@@ -49,7 +49,6 @@
             <AbsenceValidation 
                 :absences="absences"
                 :validation_action="validation_action"
-
                 @recorded="refreshAbsencesAndClose"
                 @cancel="closeValidationModal"
                 />
@@ -164,7 +163,7 @@ export default {
     left:0px;
 }
 @media (min-width: 576px) {
-    .limtiWidth {
+    .limitWidth {
         left: 52px;
     }
 }
@@ -172,7 +171,6 @@ export default {
 
     .limitWidth {
         left: 402px;
-        max-width :1306px;
     }
 }
 
