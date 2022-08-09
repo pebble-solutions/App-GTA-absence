@@ -1,8 +1,8 @@
 {
-    "env": "dev",
+    "env": "prod",
     "name": "gta-absence",
     "domains": {
-        "prod": "gta-absence.pebble.solutions",
+        "prod": "pebble.solutions",
         "dev": "localhost"
     },
     "cfg": {
