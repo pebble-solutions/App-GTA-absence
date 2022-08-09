@@ -7,7 +7,9 @@ export default createStore({
 		login: null,
 		elements: [],
 		openedElement: null,
-		tmpElement: null
+		tmpElement: null,
+		absences_validation: [],
+		absences: []
 	},
 	getters: {
 		activeStructure(state) {
@@ -130,6 +132,62 @@ export default createStore({
 		 */
 		setStructureId(state, structureId) {
 			state.activeStructureId = structureId;
+		},
+
+		/**
+		 * Réalise une modification de la collection d'absences stockées dans absence_validation
+		 * 
+		 * @param {Object} state le state de VueX
+		 * @param {Object} absenceOptions 
+		 * 		- absence {Object} l'absence sur laquelle doit être réalisée
+		 * 		- action {String} 'add' (ajouter l'absence), 'remove' (retirer l'absence), 'reset' (vider le tableau)  
+		 */
+		absences_validation (state, absenceOptions) {
+
+			let absenceData = absenceOptions.absenceData;
+			let action = absenceOptions.action;
+
+			if (action == 'add') {
+				state.absences_validation.push(absenceData);
+			}
+			else if (action == 'remove') {
+				let index = state.absences_validation.findIndex(a => a.absence.id === absenceData.absence.id);
+				if (index !== -1) {
+					state.absences_validation.splice (index,1);
+				}
+			}
+			else if(action == 'reset') {
+				state.absences_validation = [];
+			}
+		},
+
+		absences (state, absences) {
+			state.absences = absences;
+		},
+
+		/**
+		 * met à jour les données des absen,ces stockées dans le state.
+		 * Pour chaque absence, si l'id existe déjà dans le state,
+		 * les informations sont mises à jour.
+		 * dans le cas contraire la nouvelle absence est ajoutée à la
+		 * fin du state absences.
+		 * 
+		 * @param {Object} state le state de vuex
+		 * @param {Array} absences les absences à mettre à jour dans le state 
+		 */
+		refresh_absences(state, absences) {
+			absences.forEach(absence => {
+				let stateAbsence = state.absences.find (a => a.id === absence.id);
+				if (stateAbsence) {
+					for (const key in absence) {
+						stateAbsence[key] = absence [key];
+					}
+				}
+				else {
+					state.absences.push (absence);
+				}
+			});
+
 		}
 	},
 	actions: {
@@ -224,6 +282,72 @@ export default createStore({
 			context.commit('tmpElement', null);
 			context.commit('replaceElements', []);
 			context.commit('setStructureId', payload);
+		},
+
+		/**
+		 * Ajoute une absence à la liste des absences sélectionnées
+		 * @param {Object} context instance Vuex
+		 * @param {Object} absenceOptions
+		 * 		- absence {Object} L'absence à ajouter
+		 * 		- app {Object} l'instance de l'application App.JS liée
+		 */
+		addAbsenceValidation(context, absenceOptions) {
+			return context.dispatch('loadAbsenceData', absenceOptions)
+			.then((absenceData) => {
+				context.commit('absences_validation', {absenceData, action:'add'});
+			})
+		},
+
+		/**
+		 * Retire une absence à la liste des absences sélectionnées
+		 * @param {Object} context instance Vuex
+		 * @param {Object} absenceOptions
+		 * 		- absence {Object} L'absence à retirer
+		 * 		- app {Object} l'instance de l'application App.JS liée
+		 */
+		removeAbsenceValidation(context, absenceOptions) {
+			let absence = absenceOptions.absence;
+			context.commit('absences_validation', {absenceData: {absence}, action:'remove'});
+		},
+
+		/**
+		 * Envoie une requête à l'API pour charger les données détaillées d'une absence :
+		 * - absence
+		 * - managers
+		 * - periodes
+		 * - codages
+		 * - declarations
+		 * - managers
+		 * 
+		 * @param {Object} context instance vuex
+		 * @param {Object} absenceOptions 
+		 * 		- absence {Object} l'absence à traiter
+		 * 		- vm {Object} instance vueJS contenant une application de $app
+		 * 
+		 * @returns {Promise}
+		 */
+		loadAbsenceData(context, absenceOptions) {
+			let absence = absenceOptions.absence;
+			let app = absenceOptions.app;
+
+			let absenceData = {};
+
+			return app.apiGet("structurePersonnel/GET/" + absence.structure__personnel_id + "/absence/" + absence.id)
+			.then((data) => {
+				let abs = data.result;
+				absenceData = {
+					absence: absence,
+					codages: abs.codage,
+					declarations: abs.declaration,
+					periodes: abs.periode
+				};
+				return app.apiGet('structurePersonnel/GET/'+absence.structure__personnel_id+'/nx');
+			})
+			.then((managers) => {
+				absenceData.managers = managers;
+				return absenceData;
+			})
+			.catch(app.catchError);
 		}
 	},
 	modules: {

@@ -8,7 +8,7 @@
 		@auth-change="setLocal_user">
 
 		<template v-slot:header>
-			<div class="mx-2 d-flex align-items-center" v-if="openedElement">
+			<div class="mx-2 d-flex align-items-center d-none d-md-block" v-if="openedElement">
 				<router-link to="/" custom v-slot="{ navigate, href }">
 					<a class="btn btn-dark me-2" :href="href" @click="navigate">
 						<i class="bi bi-arrow-left"></i>
@@ -26,15 +26,16 @@
 		<template v-slot:menu>
 			<AppMenu>
 				<AppMenuItem href="/" look="dark" icon="bi bi-people">Mon personnel</AppMenuItem>
-				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Absence à valider</AppMenuItem>
+				<AppMenuItem href="/validation" look="dark" icon="bi bi-person-check">Demande d'absence à traiter <span class="badge bg-secondary float-end">12</span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
 		<template v-slot:list>
 			<AppMenu v-if="$route.name == 'validation'">
+				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
-				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}}<span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}} <i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -69,8 +70,11 @@ import AppMenuItem from '@/components/pebble-ui/AppMenuItem.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 import CONFIG from "@/config.json"
+import ValidationItem from './components/ValidationItem.vue'
 
 export default {
+
+	inheritAttrs: false,
 
 	data() {
 		return {
@@ -85,13 +89,22 @@ export default {
 	},
 
 	computed: {
-		...mapState(['elements', 'openedElement']),
+		...mapState(['elements', 'openedElement', 'absences']),
 		...mapGetters(['primary_personnel'])
 	},
 
 	watch: {
-		$route() {
+		$route(to,from) {
 			this.$app.dispatchEvent('menuChanged', 'list');
+			if(to.name !== from.name && to.name == "validation"){
+				this.$app.apiGet(`structurePersonnel/GET/${this.primary_personnel.id}/validation`)
+				.then ((data) => {
+					this.$store.commit('absences', data);
+					console.log ('absences', data);
+				})
+				.catch (this.$app.catchError)
+			}
+				
 		}
 	},
 
@@ -167,7 +180,8 @@ export default {
 	components: {
 		AppWrapper,
 		AppMenu,
-		AppMenuItem
+		AppMenuItem,
+		ValidationItem
 	},
 
 	mounted() {

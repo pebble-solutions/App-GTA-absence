@@ -25,10 +25,19 @@ const routes = [
     ]
   },
   {
-    path: '/validation',
+    path: '/validation/:action?',
     name: 'validation',
     component: () => import(/* webpackChunkName: "about" */ '../views/Validation.vue'),
+    // children: [
+    //   {
+    //     name:'absence_select',
+    //     path:'absence_select/:absenceId/:action?',
+    //     compononent: ( => import(/* webpackChunkName: "about" */ ''))
+    //   }
+    // ]
   },
+
+
   {
     path:'/listabsence/:id',
     name:'ListAbsence',

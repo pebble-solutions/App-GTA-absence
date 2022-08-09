@@ -28,14 +28,14 @@
             <button class="btn btn-outline-secondary" @click.prevent="$emit('edit-mode')">Modifier la demande <i class="bi bi-pencil-square"></i></button>
         </div>
 
-        <div v-if="isManager && absence.traiter != 'OUI'" class="my-3">
+        <div v-if="isManager && absence.traiter != 'OUI' && toolbar" class="my-3">
             <div class="d-flex">
                 <button class="w-50 me-1 btn btn-success" @click.prevent="$emit('authorize')" :disabled="absence.valider == 'OUI'">Autoriser</button>
                 <button class="w-50 ms-1 btn btn-danger" @click.prevent="$emit('refuse')" :disabled="absence.valider == 'NON'">Refuser</button>
             </div>
 
-            <div class="text-center mt-2 text-secondary" v-if="absence.valider">Le status de validation est déjà renseigné. Une modification annulera les informations 
-                déjà enregistées.
+            <div class="text-center mt-2 text-secondary" v-if="absence.valider">Le statut de validation est déjà renseigné. Une modification annulera les informations 
+                précédemment enregistrées.
             </div>
 
         </div>
@@ -53,7 +53,11 @@ export default {
         periodes: Array,
         codages: Array,
         declarations: Array,
-        editable: Boolean
+        editable: Boolean,
+        toolbar: {
+            type: Boolean,
+            default: true
+        }
     },
 
     emits: ['edit-mode', 'authorize', 'refuse'],
@@ -124,7 +128,7 @@ export default {
         }
     },
 
-    components: { AbsencePeriode }
+    components: { AbsencePeriode },
 }
 
 </script>

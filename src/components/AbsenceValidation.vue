@@ -5,7 +5,7 @@
         <div class="my-3 lead" :class="actionClass">{{actionLabel}}</div>
 
         <div class="my-3">
-            <label for="commentaire_n1" class="form-label">Commenteur valideur</label>
+            <label for="commentaire_n1" class="form-label">Commentaire valideur</label>
             <textarea name="commentaire_n1" id="commentaire_n1" rows="5" class="form-control" v-model="commentaire_n1"></textarea>
         </div>
 
@@ -74,6 +74,10 @@ export default {
             })
             .then((data) => {
                 this.$emit('recorded', data);
+                console.log('absences_ids', absences_ids);
+                //delete this.absences_ids;
+                console.log ('absences_ids_delete', absences_ids);
+                //absences_ids = [];
             })
             .catch(this.$app.catchError)
             .finally(() => {

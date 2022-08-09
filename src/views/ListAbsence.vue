@@ -9,15 +9,15 @@
 
     
         <div class="container">
-            <h2 class="my-2">Vos demandes d'absences</h2>
-            <div class="card row">
-                <div class=" card-body">
-                    <div class ="list-group list-group-flush" v-for="abs in listabsence" :key="'absence'+abs.id">
-                        <div class="list-group-item d-flex flex-row align-items-center">
-                            <label class="form-label">{{abs.dd}} {{abs.df}}</label>
-                            <select class="form-select">
-                            </select>
-                            <span class="col-2"><i class="bi bi-trash"></i></span>
+            <div v-if="!listabsence.valider">
+                <h3 class="my-2">Vos demandes d'absences en attente de validation {{openedElement}} </h3>
+                <div class="card row">
+                    <div  class=" card-body">
+                        <div  class ="list-group list-group-flush" v-for="abs in listabsence" :key="'absence'+abs.id">
+                            <div class="list-group-item d-flex flex-row align-items-center">
+                                <label class="form-label">{{formatDateFr(abs.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(abs.df)}}</label>
+                                <label class="form-label">demande du {{formatDateFr(abs.dd)}} à </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@ export default {
     },
     methods: {
         DisplayList() {
-            let apiUrl = 'structurePersonnel/GET/'+457+'/absence';
+            let apiUrl = 'structurePersonnel/GET/'+529+'/absence';
 
             this.$app.apiGet(apiUrl)
 
@@ -70,16 +70,22 @@ export default {
             console.log(error);
             })
         },
+        formatDateFr(date) {
+
+            let newDate = new Date(date);
+            let format = newDate.toLocaleDateString('fr-FR');
+            return format;
+        }   
 
     },
 
     mounted() {
 
         this.DisplayList();
+        console.log('opened',this.openedElement);
     },
 
             /**copié dans le modèle
-             
             beforeRouteUpdate(to) {
                 this.load(to.params.id);
             },

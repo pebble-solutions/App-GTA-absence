@@ -1,6 +1,6 @@
 <template>
 <div>
-    fqfdqs
+    
     {{s}}
 </div>
     <div v-if="openedElement">
