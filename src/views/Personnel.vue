@@ -151,6 +151,9 @@ export default {
     mounted() {
         this.load(this.$route.params.id);
         this.listManager();
+        console.log('managers', this.managers);
+        console.log('absences in Personnel', this.absences)
+        console.log('absences_validation in personnel', this.absences_validation)
     }
 }
 </script>

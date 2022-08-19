@@ -158,7 +158,6 @@ export default {
 					if (this.primary_personnel) {
 						this.loadAbsencesValidation();
 						this.$router.push('/personnel/'+this.primary_personnel.id);
-						console.log('switch');
 					}
 					else {
 						this.$router.push('/');
@@ -202,7 +201,6 @@ export default {
 		
 		this.$app.addEventListener('structureChanged', (structureId) => {
 			this.switchStructure(structureId);
-			console.log('text');
 		});
 
 		this.$app.addEventListener('beforeClearAuth', () => {

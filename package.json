@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "date-and-time": "^2.4.0",
     "firebase": "^9.6.9",
+    "google-charts": "^2.0.0",
     "pluralize": "^8.0.0",
     "string-to-color": "^2.2.2",
     "vue": "^3.0.0",
