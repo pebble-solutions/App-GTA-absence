@@ -18,16 +18,20 @@
             </div>
             <div class="card my-3">
                 <div class="card-body">
-                    <h2 class="card-title">Toutes les demandes d'absence</h2>
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h2 class="card-title">Toutes les demandes d'absence</h2>
+
+                        <DropdownYear></DropdownYear>
+                    </div>
+
                     <Spinner v-if="pending.absences"></Spinner>
                     <div v-else-if="!pending.absences && !openedPersonnelAbsences.length">
                         <AlertMessage icon="bi bi-x-square" variant="danger">
                             Pas de demandes d'absence
                         </AlertMessage>
                     </div>
-                    <div class="list-group list-group-flush" v-if="!pending.absences">
-                        <AbsenceItem :absence="absence" v-for="absence in openedPersonnelAbsences" :key="'absence-'+absence.id" />
-                    </div>
+
+                    <AccordionMonth></AccordionMonth>
                 </div>
             </div>
         </div>
@@ -39,11 +43,12 @@
 <script>
 
 import {mapActions, mapState} from 'vuex';
-import AbsenceItem from '../components/AbsenceItem.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
 import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
 import UserImage from '../components/pebble-ui/UserImage.vue';
+import DropdownYear from '../components/DropdownYear.vue';
+import AccordionMonth from '../components/AccordionMonth.vue';
 
 export default {
     data() {
@@ -63,11 +68,12 @@ export default {
     },
 
     components: {
-    AbsenceItem,
     Spinner,
     AbsenceForm,
     AlertMessage,
-    UserImage
+    UserImage,
+    DropdownYear,
+    AccordionMonth
 },
 
     methods: {
