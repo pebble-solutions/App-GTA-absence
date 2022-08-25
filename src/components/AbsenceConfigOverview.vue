@@ -49,7 +49,6 @@ import AbsencePeriode from './AbsencePeriode.vue';
 export default {
     props: {
         absence: Object,
-        managers: Array,
         periodes: Array,
         codages: Array,
         declarations: Array,
@@ -83,7 +82,7 @@ export default {
 
     computed: {
 
-        ...mapState(['openedElement']),
+        ...mapState(['openedElement', 'openedPersonnelManagers']),
         ...mapGetters(['primary_personnel']),
 
         /**
@@ -91,7 +90,7 @@ export default {
          * @return {Object}
          */
         manager() {
-            return this.managers.find(e => e.id == this.absence.validation_personne_id);
+            return this.openedPersonnelManagers.find(e => e.id == this.absence.validation_personne_id);
         },
 
         /**

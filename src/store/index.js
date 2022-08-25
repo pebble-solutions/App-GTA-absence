@@ -9,7 +9,9 @@ export default createStore({
 		openedElement: null,
 		tmpElement: null,
 		absences_validation: [],
-		absences: []
+		absences: [],
+		openedPersonnelAbsences: [],
+		openedPersonnelManagers: []
 	},
 	getters: {
 		activeStructure(state) {
@@ -188,6 +190,93 @@ export default createStore({
 				}
 			});
 
+		},
+
+		/**
+		 * Réaliser une modification sur la collection des absences du personnel sélectionné dans la liste.
+		 * 
+		 * @param {Object} state Le state VueX
+		 * @param {Object} absencesOptions 
+		 * 		- absence {Object} L'absence sur laquelle est réalisée la mise à jour
+		 * 		- absences {Array} Une liste d'absences sur lesquelles sont réalisées les mises à jour
+		 * 		- action {String} 'add' (ajouter), 'remove' (retirer), 'replace' (remplace l'ensemble de la 
+		 * 		  collection par la nouvelle collection fournie), 'reset' (réinitialise la collection à 0), 
+		 * 	 	  'update' (met à jour les informations des absences fournies. Si une ou plusieurs absences 
+		 *        fournies n'existent pas dans la collection, elle seront ajoutées à la fin)
+		 */
+		openedPersonnelAbsences(state, absencesOptions) {
+			let absences = absencesOptions.absences;
+
+			if (!absences) {
+				absences = [];
+			}
+
+			if (absencesOptions.absence) {
+				absences.push(absencesOptions.absence);
+			}
+
+			let action = absencesOptions.action;
+
+			if (action == 'add') {
+				absences.forEach(absence => {
+					state.openedPersonnelAbsences.push(absence);
+				})
+			}
+			else if (action == 'remove') {
+				absences.forEach(absence => {
+					let index = state.openedPersonnelAbsences.findIndex(a => a.id === absence.id);
+
+					if (index !== -1) {
+						state.openedPersonnelAbsences.splice(index, 1);
+					}
+				})
+			}
+			/* En mode update, on met à jour les informations existantes pour les absences déjà chargées 
+			 * dans le store. Les absences non présentes dans le store sont ajoutées à la collection.
+			 */
+			else if (action == 'update') {
+				absences.forEach(absence => {
+					let found = state.openedPersonnelAbsences.find(a => a.id === absence.id);
+
+					if (found) {
+						for (const key in absence) {
+							found[key] = absence[key];
+						}
+					}
+					else {
+						state.openedPersonnelAbsences.push(absence)
+					}
+				})
+			}
+			/* Reset réinitialise la collection avec un tableau vide.
+			 */
+			else if (action == 'reset') {
+				state.openedPersonnelAbsences = [];
+			}
+			else {
+				state.openedPersonnelAbsences = absences;
+			}
+		},
+
+
+		/**
+		 * Réalise une modification sur la collection des managers du personnel ouvert
+		 * 
+		 * @param {Object} state L'instance VueX
+		 * @param {Object} managersOptions 
+		 * - managers {Array} Collection de managers
+		 * - action {String} 'replace', 'reset'
+		 */
+		openedPersonnelManagers(state, managersOptions) {
+			let managers = managersOptions.managers;
+			let action = managersOptions.action;
+
+			if (action == 'reset') {
+				state.openedPersonnelManagers = [];
+			}
+			else {
+				state.openedPersonnelManagers = managers;
+			}
 		}
 	},
 	actions: {
@@ -214,8 +303,10 @@ export default createStore({
 		 * Ferme l'élément ouvert
 		 * @param {Object} context Instance VueX
 		 */
-		unload(context) {
+		unloadPersonnel(context) {
 			context.commit('close');
+			context.commit('openedPersonnelAbsences', { action: 'reset' });
+			context.commit('openedPersonnelManagers', { action: 'reset' });
 		},
 
 		/**
@@ -348,7 +439,75 @@ export default createStore({
 				return absenceData;
 			})
 			.catch(app.catchError);
-		}
+		},
+
+		/**
+		 * Ajoute des absences dans la collection des absences du personnel ouvert.
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Array} absences Collection d'absences
+		 */
+		addOpenedPersonnelAbsences(context, absences) {
+			context.commit('openedPersonnelAbsences', { absences, action: 'add' });
+		},
+
+		/**
+		 * Retire des absences dans la collection des absences du personnel ouvert.
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Array} absences Collection d'absences
+		 */
+		removeOpenedPersonnelAbsences(context, absences) {
+			context.commit('openedPersonnelAbsences', { absences, action: 'remove' });
+		},
+
+		/**
+		 * Remplace la collection des absences du personnel ouvert
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Array} absences Collection d'absences
+		 */
+		setOpenedPersonnelAbsences(context, absences) {
+			context.commit('openedPersonnelAbsences', { absences, action: 'replace' });
+		},
+
+		/**
+		 * Réinitialise la collection des absences du personnel ouvert
+		 * 
+		 * @param {Object} context Instance VueX
+		 */
+		resetOpenedPersonnelAbsences(context) {
+			context.commit('openedPersonnelAbsences', { action: 'reset' });
+		},
+
+		/**
+		 * Met à jour les informations des absences présentes dans la collection et ajoute les nouvelles.
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Array} absences Collection d'absences
+		 */
+		updateOpenedPersonnelAbsences(context, absences) {
+			context.commit('openedPersonnelAbsences', { action: 'update' , absences });
+		},
+
+		/**
+		 * Remplace la collection des managers du personnel ouvert
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Array} managers Collection de managers
+		 */
+		setOpenedPersonnelManagers(context, managers) {
+			context.commit('openedPersonnelManagers', { managers, action: 'replace' });
+		},
+
+		/**
+		 * Réinitialise la collection des managers du personnel ouvert
+		 * 
+		 * @param {Object} context Instance VueX
+		 */
+		resetOpenedPersonnelManagers(context) {
+			context.commit('openedPersonnelManagers', { action: 'reset' });
+		},
 	},
 	modules: {
 	}

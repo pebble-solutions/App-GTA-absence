@@ -30,7 +30,7 @@
 import dateAndTime from 'date-and-time';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     data() {
@@ -50,7 +50,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['openedElement']),
+        ...mapGetters(['primary_personnel'])
     },
 
     methods: {
@@ -64,7 +64,7 @@ export default {
          */
         createAbsence() {
             
-            let apiUrl = 'structurePersonnel/POST/'+this.openedElement.id+'/absence';
+            let apiUrl = 'structurePersonnel/POST/'+this.primary_personnel.id+'/absence';
  
             let dd = dateAndTime.format(this.dateAbsence[0], 'YYYY-MM-DD');
             let df = dateAndTime.format(this.dateAbsence[1], 'YYYY-MM-DD');
@@ -83,7 +83,7 @@ export default {
 
                 //this.addAbsence(this.absence);
 
-                let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/absence/'+this.absence.id+'/codage';
+                let apiUrl = 'structurePersonnel/GET/'+this.primary_personnel.id+'/absence/'+this.absence.id+'/codage';
                 return this.$app.apiGet(apiUrl);
             })
             .then((data) => {

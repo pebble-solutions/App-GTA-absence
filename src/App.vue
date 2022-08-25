@@ -8,15 +8,15 @@
 		@auth-change="setLocal_user">
 
 		<template v-slot:header>
-			<div class="mx-2 d-flex align-items-center d-none d-md-block" v-if="openedElement">
+			<div class="mx-2 d-flex align-items-center" v-if="openedElement">
 				<router-link to="/" custom v-slot="{ navigate, href }">
 					<a class="btn btn-dark me-2" :href="href" @click="navigate">
 						<i class="bi bi-arrow-left"></i>
 					</a>
 				</router-link>
 
-				<span class="me-2">
-					<i class="bi bi-person-square me-1"></i>
+				<span class="me-2 d-flex align-items-center">
+					<UserImage size="user-image-sm" :name="openedElement.cache_nom" className="me-2" />
 					{{openedElement.cache_nom}}
 				</span>
 			</div>
@@ -35,7 +35,16 @@
 				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence"></ValidationItem>
 			</AppMenu>
 			<AppMenu v-else>
-				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id" icon="bi bi-person-square">{{el.cache_nom}} <i class="bi bi-check-lg" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i><span class="badge bg-secondary float-end"> {{el.matricule}} </span> </AppMenuItem>
+				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id">
+					<div class="d-flex align-items-center justify-content-between">
+						<div class="d-flex align-items-center">
+							<UserImage size="user-image-sm" :name="el.cache_nom" className="me-2" />
+							{{el.cache_nom}} 
+							<i class="bi bi-check-lg ms-2" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i>
+						</div>
+						<span class="badge bg-secondary"> {{el.matricule}} </span> 
+					</div>
+				</AppMenuItem>
 			</AppMenu>
 		</template>
 
@@ -71,6 +80,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 import CONFIG from "@/config.json"
 import ValidationItem from './components/ValidationItem.vue'
+import UserImage from './components/pebble-ui/UserImage.vue'
 
 export default {
 
@@ -147,22 +157,7 @@ export default {
 
 				this.$store.dispatch('switchStructure', structureId);
 
-				this.listElements()
-				.then(() => {
-					/* La variable primary_personnel est stockée au niveau du store.
-					 * Elle est dynamique et n'est renseignée que si le primary_personnel_id existe 
-					 * dans la table des personnels stockés au niveau du store. Conditions à remplir :
-					 * - L'utilisateur connecté a un primary_personnel_id
-					 * - L'utilisateur est connecté à la structure de rattachement de son primary_personnel
-					 */
-					if (this.primary_personnel) {
-						this.loadAbsencesValidation();
-						this.$router.push('/personnel/'+this.primary_personnel.id);
-					}
-					else {
-						this.$router.push('/');
-					}
-				});
+				this.listElements();
 			}
 		},
 
@@ -190,11 +185,12 @@ export default {
 	},
 
 	components: {
-		AppWrapper,
-		AppMenu,
-		AppMenuItem,
-		ValidationItem
-	},
+    AppWrapper,
+    AppMenu,
+    AppMenuItem,
+    ValidationItem,
+    UserImage
+},
 
 	mounted() {
 		this.$router.push('/');

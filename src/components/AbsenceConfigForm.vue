@@ -14,7 +14,7 @@
         <div class="my-2">
             <label for="manager" class="form-label">Demander la validation à</label>
             <select name="manager" id="manager" class="form-select" v-model="absenceTarget.validation_personne_id" required>
-                <option v-for="manager in managers" :key="manager.id" :value="manager.id"> {{manager.cache_nom}} </option>
+                <option v-for="manager in openedPersonnelManagers" :key="manager.id" :value="manager.id"> {{manager.cache_nom}} </option>
             </select>
         </div>
     
@@ -39,7 +39,6 @@ export default {
         declarations: Array,
         codages: Array,
         absence: Object,
-        managers: Array,
         cancelButton: {
             type: Boolean,
             default: true
@@ -55,7 +54,7 @@ export default {
     },
 
     computed: {
-        ...mapState(['openedElement'])
+        ...mapState(['openedElement', 'openedPersonnelManagers'])
     },
 
     emits: ['recorded', 'cancel'],

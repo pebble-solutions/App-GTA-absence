@@ -5,7 +5,6 @@
         <template v-else>
             <AbsenceConfigOverview 
                 :absence="absence" 
-                :managers="managers"
                 :periodes="periodes"
                 :codages="codages"
                 :declarations="declarations"
@@ -20,7 +19,6 @@
 
             <AbsenceConfigForm
                 :absence="absence" 
-                :managers="managers"
                 :periodes="periodes"
                 :codages="codages"
                 :declarations="declarations"
@@ -34,7 +32,7 @@
                 :absences="[absence]"
                 :validation_action="validation_action"
 
-                @recorded="refreshAbsencesAndSwitch"
+                @recorded="refreshAbsenceAndSwitch"
                 @cancel="switchToOverviewMode"
 
                 v-else-if="mode == 'validation'"
@@ -45,7 +43,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
 import AppModal from '../components/pebble-ui/AppModal.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
@@ -53,9 +51,6 @@ import AbsenceConfigForm from '../components/AbsenceConfigForm.vue';
 import AbsenceValidation from '../components/AbsenceValidation.vue';
 
 export default {
-    props: {
-        managers: Array
-    },
     
     data() {
         return {
@@ -74,7 +69,7 @@ export default {
 
     computed: {
         ...mapState(['openedElement']),
-        ...mapGetters(['primary_personnel']),
+        ...mapGetters(['primary_personnel', 'openedPersonnelAbsences']),
         
         /**
          * Contrôle si l'élément est éditable. Un élément est éditable dans les condtions suivantes
@@ -93,6 +88,8 @@ export default {
     components: { AbsenceConfigOverview, AppModal, Spinner, AbsenceConfigForm, AbsenceValidation },
 
     methods: {
+        ...mapActions(['updateOpenedPersonnelAbsences']),
+
         /**
          * Met à jour les informations stockées au niveau de data et passe en mode overview
          * 
@@ -103,6 +100,7 @@ export default {
          */
         refreshAndSwitch(payload) {
             this.refreshDatas(payload);
+            this.updateOpenedPersonnelAbsences([payload.absence]);
             this.switchToOverviewMode();
         },
 
@@ -111,8 +109,9 @@ export default {
          * et bascule en mode overview
          * @param {Array} absences Collection de GtaAbsence
          */
-        refreshAbsencesAndSwitch(absences) {
+        refreshAbsenceAndSwitch(absences) {
             this.absence = absences[0];
+            this.updateOpenedPersonnelAbsences(absences);
             this.switchToOverviewMode();
         },
 
@@ -158,11 +157,7 @@ export default {
         }
     },
 
-    beforeRouteUpdate(to, from) {
-        if (to.params.id !== from.params.id) {
-            this.load(to.params.id);
-        }
-
+    beforeRouteUpdate(to) {
         this.checkRouteMode(to.params.action);
     },
 

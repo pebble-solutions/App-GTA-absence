@@ -4,7 +4,7 @@
 		<hr>
 		<div class="card mb-3">
 			<div class="card-body">
-				<AbsenceForm />
+				<AbsenceForm @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
 			</div>
 		</div>
 
@@ -332,13 +332,21 @@ export default {
 			
 	
 	computed: {
-		...mapState(['OpenedElement','absences','managers']),
+		...mapState(['absences','managers']),
 		...mapGetters(['primary_personnel'])
 	},
 
 	components: { AbsenceForm, PersonalInformationCard, TeamInformationCard },
 
 	methods: {
+
+		/**
+         * Redirige le client vers la vue de modification de l'absence
+         * @param {Object} absence Un objet représentant une absence
+         */
+        routeToAbsenceConfig(absence) {
+            this.$router.push('/personnel/'+this.primary_personnel.id+'/absence_details/'+absence.id+'/edit');
+        }
 
 		// /**
         //  * Ajoute une absence à la liste des absences.

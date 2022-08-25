@@ -3,7 +3,10 @@
         <div class="container">
             <div class="alert alert-danger" v-if="error">{{error}}</div>
             <h1 class="d-flex align-items-center justify-content-between py-3">
-                {{openedElement.cache_nom}} 
+                <div class="d-flex align-items-center">
+                    <UserImage size="user-image-lg" :name="openedElement.cache_nom" class-name="me-2" />
+                    {{openedElement.cache_nom}} 
+                </div>
                 <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}}</span>
             </h1>
                     
@@ -15,33 +18,32 @@
             </div>
             <div class="card my-3">
                 <div class="card-body">
-                    <h2 class="mb-3">Toutes les demandes d'absence</h2>
+                    <h2 class="card-title">Toutes les demandes d'absence</h2>
                     <Spinner v-if="pending.absences"></Spinner>
-                    <div v-else-if="!pending.absences && !absences.length">
+                    <div v-else-if="!pending.absences && !openedPersonnelAbsences.length">
                         <AlertMessage icon="bi bi-x-square" variant="danger">
                             Pas de demandes d'absence
                         </AlertMessage>
                     </div>
                     <div class="list-group list-group-flush" v-if="!pending.absences">
-                        <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
+                        <AbsenceItem :absence="absence" v-for="absence in openedPersonnelAbsences" :key="'absence-'+absence.id" />
                     </div>
                 </div>
             </div>
         </div>
 
-        <router-view 
-            :managers="managers" 
-            :absences="absences"></router-view>
+        <router-view />
     </div>
 </template>
 
 <script>
 
-import {mapState} from 'vuex';
+import {mapActions, mapState} from 'vuex';
 import AbsenceItem from '../components/AbsenceItem.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
 import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
+import UserImage from '../components/pebble-ui/UserImage.vue';
 
 export default {
     data() {
@@ -51,25 +53,26 @@ export default {
                 absences:true
             },
             error: null,
-            codages: [],
-            managers:[],
-            absences: []
+            codages: []
         }
     },
 
     
     computed: {
-        ...mapState(['openedElement']),
+        ...mapState(['openedElement', 'openedPersonnelAbsences', 'openedPersonnelManagers']),
     },
 
     components: {
-        AbsenceItem,
-        Spinner,
-        AbsenceForm,
-        AlertMessage
-    },
+    AbsenceItem,
+    Spinner,
+    AbsenceForm,
+    AlertMessage,
+    UserImage
+},
 
     methods: {
+
+        ...mapActions(['setOpenedPersonnelAbsences', 'addOpenedPersonnelAbsences', 'unloadPersonnel', 'setOpenedPersonnelManagers']),
 
         load(id) {
             this.pending.extended;
@@ -94,11 +97,10 @@ export default {
          * Récupère la liste des managers disponibles pour le personnel en cours
          */
         listManager() {
-
             let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/nx';
             this.$app.apiGet(apiUrl)
             .then((data) => {
-                this.managers = data;
+                this.setOpenedPersonnelManagers(data);
             })
             .catch(this.$app.catchError);
         },
@@ -107,12 +109,12 @@ export default {
         /**
          * Charge les déclarations depuis le serveur
          */
-        loadAbsences(id) {
-            let apiUrl = 'structurePersonnel/GET/'+id+'/absence';
+        loadAbsences(personnelId) {
+            let apiUrl = 'structurePersonnel/GET/'+personnelId+'/absence';
             this.pending.absences = true;
             this.$app.apiGet(apiUrl)
             .then( (data) => {
-                this.absences = data.result;
+                this.setOpenedPersonnelAbsences(data.result);
                 this.pending.absences = false;
             })
             .catch(this.$app.catchError);
@@ -120,10 +122,10 @@ export default {
 
         /**
          * Ajoute une absence à la liste des absences.
-         * @param {Object} payload Une absence
+         * @param {Object} absence Une absence
          */
-        addAbsence(payload) {
-            this.absences.push(payload);
+        addAbsence(absence) {
+            this.addOpenedPersonnelAbsences([absence])
         },
 
         /**
@@ -144,16 +146,13 @@ export default {
     },
 
     beforeRouteLeave(from, to, next) {
-        this.$store.dispatch('unload');
+        this.unloadPersonnel();
         next();
     },
 
     mounted() {
         this.load(this.$route.params.id);
         this.listManager();
-        console.log('managers', this.managers);
-        console.log('absences in Personnel', this.absences)
-        console.log('absences_validation in personnel', this.absences_validation)
     }
 }
 </script>
