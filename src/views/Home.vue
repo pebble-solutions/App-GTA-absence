@@ -1,12 +1,21 @@
 <template>
 	<div>
 		<HeaderToolbar>
-			<div class="d-flex align-items-center">
-				<PeriodDropdown @period-change="periodChange" v-if="personnelStats" />
-				<div class="form-check form-switch form-check-reverse ms-2">
-					<input class="form-check-input" type="checkbox" role="switch" id="chartModeSwitch" v-model="chartMode">
-					<label class="form-check-label" for="chartModeSwitch">Graphiques</label>
+			<div class="d-flex align-items-center justify-content-between">
+				<div class="d-flex align-items-center">
+					<PeriodDropdown @period-change="periodChange" v-if="personnelStats" />
+					<div class="form-check form-switch form-check-reverse ms-2" title="Mode graphique">
+						<input class="form-check-input" type="checkbox" role="switch" id="chartModeSwitch" v-model="chartMode">
+						<label class="form-check-label" for="chartModeSwitch">
+							<i class="bi bi-bar-chart"></i>
+						</label>
+					</div>
 				</div>
+
+				<button class="btn btn-light" @click.prevent="$emit('refresh')" title="Actualiser les données" :disabled="isPending">
+					<i class="bi bi-arrow-clockwise" v-if="!isPending"></i>
+					<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-else></span>
+				</button>
 			</div>
 		</HeaderToolbar>
 		<div class="container py-2" v-if="$store.state.login">
@@ -44,6 +53,9 @@ import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
 export default {
 	name: 'Home',
 
+	props: {
+		isPending: Boolean
+	},
 	
 	data() {
 		return {
@@ -108,14 +120,6 @@ export default {
 		periodChange(period) {
 			this.selectedPeriod = period;
 		}
-	},
-
-	mounted() {
-		this.$store.commit('tmpElement', {
-			name: '',
-			description: ''
-			
-		});
 	}
 }
 </script>

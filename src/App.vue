@@ -64,7 +64,7 @@
 
 		<template v-slot:core>
 			<div class="bg-light">
-				<router-view :cfg="cfg" v-if="isConnectedUser" />
+				<router-view :cfg="cfg" v-if="isConnectedUser" @refresh="refreshData()" :is-pending="isPending" />
 			</div>
 		</template>
 
@@ -116,7 +116,18 @@ export default {
 
 	computed: {
 		...mapState(['elements', 'openedElement', 'absences']),
-		...mapGetters(['primary_personnel'])
+		...mapGetters(['primary_personnel']),
+
+		/**
+		 * Retourne true si au moins une action est en cours
+		 * @returns {Boolean}
+		 */
+		isPending() {
+			for (const key in this.pending) {
+				if (this.pending[key]) return true;
+			}
+			return false;
+		}
 	},
 
 	watch: {
@@ -163,6 +174,8 @@ export default {
 		listElements(action) {
 			action = typeof action === 'undefined' ? 'update' : action;
 
+			this.pending.elements = true;
+
 			return this.$app.apiGet('structurePersonnel/GET/listByLogin', {
 				nx: true
 			})
@@ -179,7 +192,8 @@ export default {
 			.then((stats) => {
 				this.setPersonnelStats(stats);
 			})
-			.catch(this.$app.catchError);
+			.catch(this.$app.catchError)
+			.finally(() => this.pending.elements = false);
 		},
 
 		/**
@@ -212,6 +226,14 @@ export default {
 				.catch (this.$app.catchError)
 				.finally(() => this.pending.validations = false);
 			}
+		},
+
+		/**
+		 * Recharge les données depuis le serveur.
+		 */
+		refreshData() {
+			this.listElements()
+			.then(() => this.loadAbsencesValidation());
 		},
 
 		...mapActions(['closeElement'])

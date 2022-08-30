@@ -2,7 +2,7 @@
     <div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="lead">{{formatDateFr(absence.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(absence.df)}}</div>
-            <span class="badge" :class="badgeStatusClass">{{badgeStatusLabel}}</span>
+            <ValidationStatus :absence="absence"  class-prefix="badge text-bg-" />
         </div>
 
         <div class="list-group my-3">
@@ -45,6 +45,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import AbsencePeriode from './AbsencePeriode.vue';
+import ValidationStatus from './ValidationStatus.vue';
 
 export default {
     props: {
@@ -127,7 +128,7 @@ export default {
         }
     },
 
-    components: { AbsencePeriode },
+    components: { AbsencePeriode, ValidationStatus },
 }
 
 </script>

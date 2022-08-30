@@ -1,6 +1,6 @@
 <template>
-    <span class="d-none d-md-block ms-2" :class="statusClass">{{statusLabel}}</span>
-    <i class="bi d-block d-md-none ms-2" :class="statusIconClass"></i>
+    <span class="ms-2" :class="statusClass">{{statusLabel}}</span>
+    <i class="bi ms-2" :class="statusIconClass"></i>
 </template>
 
 <script>
@@ -11,6 +11,10 @@ export default {
         classPrefix: {
             type: String,
             default: 'text-'
+        },
+        displayMode: {
+            type: String,
+            default: 'auto'
         }
     },
     
@@ -21,7 +25,8 @@ export default {
          * @returns {String}
          */
         statusClass () {
-            return this.classPrefix+this.getStringFromStatusArray(['success', 'danger', 'warning']);
+            let dispClass = this.displayMode == 'icon' ? ' d-none' : ' d-none d-md-block';
+            return this.classPrefix+this.getStringFromStatusArray(['success', 'danger', 'warning'])+dispClass;
         },
 
         /**
@@ -30,7 +35,8 @@ export default {
          * @returns {String}
          */
         statusIconClass () {
-            return 'text-'+this.getStringFromStatusArray(['success', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle']);
+            let dispClass = this.displayMode == 'icon' ? ' d-block' : ' d-block d-md-none';
+            return 'text-'+this.getStringFromStatusArray(['success', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle'])+dispClass;
         },
 
         /**

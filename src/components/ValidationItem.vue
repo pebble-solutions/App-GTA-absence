@@ -2,12 +2,13 @@
     <a href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
 		:class="{active: isChecked}">
 		<div class="d-flex align-items-center">
-			<i class="bi" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
-			<div class="d-flex flex-column ms-3">
-				<p>Personnel {{absence.structure__personnel_id}}<br> {{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}} </p>
+			<i class="bi me-3" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
+			<div>
+				{{absence.personnel_nom}}<br>
+				<span :class="{'text-secondary': !isChecked}">{{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}}</span>
 			</div>
 		</div>
-		<ValidationStatus :absence="absence" classPrefix="badge text-bg-"/>
+		<ValidationStatus :absence="absence" display-mode="icon" class-prefix="badge text-bg-"/>
     </a>
 
 </template>

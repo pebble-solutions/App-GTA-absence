@@ -5,7 +5,10 @@
 
         <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-3">
             <div class="card-body">
-                Personnel: {{abs.absence.structure__personnel_id}}
+                <div class="d-flex align-items-center mb-2">
+                    <span class="me-2"><UserImage size="user-image-sm" :name="abs.absence.personnel_nom" /></span>
+                    <span>{{abs.absence.personnel_nom}}</span>
+                </div>
                 <AbsenceConfigOverview 
                     :absence="abs.absence" 
                     :codages="abs.codages" 
@@ -59,6 +62,7 @@ import { mapActions, mapState } from 'vuex';
 import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
 import AppModal from '../components/pebble-ui/AppModal.vue';
 import AbsenceValidation from '../components/AbsenceValidation.vue';
+import UserImage from '../components/pebble-ui/UserImage.vue';
 
 
 export default {
@@ -133,7 +137,7 @@ export default {
         }
     },
 
-    components: { AbsenceConfigOverview, AppModal, AbsenceValidation },
+    components: { AbsenceConfigOverview, AppModal, AbsenceValidation, UserImage },
 
     beforeRouteUpdate(to) {
         this.checkRouteMode(to.params.action);

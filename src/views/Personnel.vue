@@ -82,7 +82,12 @@ export default {
         load(id) {
             this.pending.extended;
             this.$store.dispatch('load', id);
-            this.loadAbsences(id);
+            if (this.selectedPeriod) {
+                this.loadAbsences(id, {
+                    dd: this.selectedPeriod.period_start_date,
+                    df: this.selectedPeriod.period_end_date
+                });
+            }
         },
         
 
