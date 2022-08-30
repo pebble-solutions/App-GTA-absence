@@ -8,7 +8,7 @@
 
 <template>
     <form @submit.prevent="createAbsence()" method="post" action="/">
-        <h2 class="mb-3">Nouvelle demande d'absence</h2>
+        <h2 class="mb-3">Nouvelle demande</h2>
         <div class="row">
             <div class="col-12 col-md-8">
                 <label for="absence_dd" class="form-label">Dates de l'absence</label>

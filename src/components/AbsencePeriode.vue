@@ -51,13 +51,6 @@ export default {
         }
 
 
-    },
-
-    mounted() {
-        // console.log(this.periode);
-        // console.log(this.declarations);
-        // console.log(this.codages);
-
     }
 }
 

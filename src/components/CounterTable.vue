@@ -3,17 +3,21 @@
         <thead>
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Acquis</th>
-                <th scope="col">Pris</th>
-                <th scope="col">Solde</th>
+                <th scope="col" class="text-center">Pris</th>
+                <th scope="col" class="text-center text-black-50">Refusé</th>
             </tr>
         </thead>
         <tbody>
-            <tr  v-for="counter in counters" :key="'counter-row-'+counter.id" :class="className(counter)">
-                <th  scope="row">{{counter.label}}</th>
-                <td class="text-center">{{counter.acquis}}</td>
-                <td class="text-center">{{counter.pris}}</td>
-                <td class="text-center">{{counter.solde}}</td>
+            <tr  v-for="(item, codage_id) in stats" :key="'counter-row-'+codage_id">
+                <th  scope="row">{{item.label}}</th>
+                <td class="text-center">{{item.approuved}}</td>
+                <td class="text-center text-black-50">{{item.refused}}</td>
+            </tr>
+
+            <tr class="text-primary">
+                <th  scope="row">Total</th>
+                <td class="text-center">{{sum('approuved')}}</td>
+                <td class="text-center text-black-50">{{sum('refused')}}</td>
             </tr>
         </tbody>
     </table>
@@ -23,21 +27,23 @@
 export default {
 
     props: {
-        counters: Array
+        stats: Object
     },
 
     methods: {
         /**
-         * retourne la classe à appliquer sur une ligne en fonction du libellé du compteur
-         * la ligne dont le libellé est Total sera affiché en Text-primary
-         * les autres en text-secondary
+         * Retourne la somme d'un compteur
          * 
-         * @param {Object} counter le compteur a analyser
+         * @param {String} counter Compteur à calculer
          * 
-         * @returns {String}
+         * @returns {Number}
          */
-        className(counter){
-            return counter.label == 'Total' ? 'text-primary' : 'text-secondary';
+        sum(counter) {
+            let sum = 0;
+            for (const key in this.stats) {
+                sum += this.stats[key][counter];
+            }
+            return sum;
         }
     }
 }

@@ -1,14 +1,21 @@
 <template>
     <div v-if="openedElement">
+        <HeaderToolbar>
+            <div class="d-flex align-items-center">
+                <span class="d-md-none">
+                    <UserImage size="user-image-sm" :name="openedElement.cache_nom" className="me-2" />
+                </span>
+                <PeriodDropdown v-if="personnelStats" @period-change="periodChange" />
+            </div>
+        </HeaderToolbar>
+
         <div class="container">
+
+            <div class="my-3 d-flex align-items-center d-md-none lead text-secondary" v-if="openedElement">
+				<span>{{openedElement.cache_nom}}</span>
+			</div>
+
             <div class="alert alert-danger" v-if="error">{{error}}</div>
-            <h1 class="d-flex align-items-center justify-content-between py-3">
-                <div class="d-flex align-items-center">
-                    <UserImage size="user-image-lg" :name="openedElement.cache_nom" class-name="me-2" />
-                    {{openedElement.cache_nom}} 
-                </div>
-                <span title="matricule" class="fs-5 badge bg-secondary">{{openedElement.matricule}}</span>
-            </h1>
                     
 
             <div v-if="openedElement.primary === true" class="card my-3">
@@ -18,21 +25,18 @@
             </div>
             <div class="card my-3">
                 <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h2 class="card-title">Toutes les demandes d'absence</h2>
-
-                        <DropdownYear></DropdownYear>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="card-title m-0">Demandes d'absence</h2>
                     </div>
 
                     <Spinner v-if="pending.absences"></Spinner>
-                    <div v-else-if="!pending.absences && !openedPersonnelAbsences.length">
-                        <AlertMessage icon="bi bi-x-square" variant="danger">
-                            Pas de demandes d'absence
-                        </AlertMessage>
-                    </div>
-
-                    <AccordionMonth></AccordionMonth>
+                    <AlertMessage icon="bi bi-x-square" variant="danger mt-3 mb-0" v-else-if="!pending.absences && !openedPersonnelAbsences.length">
+                        Pas de demande d'absence
+                    </AlertMessage>
                 </div>
+
+                <AccordionMonth v-if="!pending.absences"></AccordionMonth>
+
             </div>
         </div>
 
@@ -46,9 +50,10 @@ import {mapActions, mapState} from 'vuex';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
 import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
-import UserImage from '../components/pebble-ui/UserImage.vue';
-import DropdownYear from '../components/DropdownYear.vue';
 import AccordionMonth from '../components/AccordionMonth.vue';
+import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
+import PeriodDropdown from '../components/PeriodDropdown.vue';
+import UserImage from '../components/pebble-ui/UserImage.vue';
 
 export default {
     data() {
@@ -58,23 +63,17 @@ export default {
                 absences:true
             },
             error: null,
-            codages: []
+            codages: [],
+            selectedPeriod: null
         }
     },
 
     
     computed: {
-        ...mapState(['openedElement', 'openedPersonnelAbsences', 'openedPersonnelManagers']),
+        ...mapState(['openedElement', 'openedPersonnelAbsences', 'openedPersonnelManagers', 'personnelStats'])
     },
 
-    components: {
-    Spinner,
-    AbsenceForm,
-    AlertMessage,
-    UserImage,
-    DropdownYear,
-    AccordionMonth
-},
+    components: { Spinner, AbsenceForm, AlertMessage, AccordionMonth, HeaderToolbar, PeriodDropdown, UserImage },
 
     methods: {
 
@@ -83,18 +82,6 @@ export default {
         load(id) {
             this.pending.extended;
             this.$store.dispatch('load', id);
-            /*
-            if (!this.openedElement.extendedData) {
-                this.$app.loadExtended(this, this.openedElement).then((data) => {
-                    data.extendedData = true;
-                    this.$store.dispatch('refreshOpened', data);
-                }).catch((error) => {
-                    this.error = this.$app.catchError(error, {
-                        mode : 'message'
-                    })
-                });
-            }
-            */
             this.loadAbsences(id);
         },
         
@@ -115,10 +102,10 @@ export default {
         /**
          * Charge les déclarations depuis le serveur
          */
-        loadAbsences(personnelId) {
+        loadAbsences(personnelId, options) {
             let apiUrl = 'structurePersonnel/GET/'+personnelId+'/absence';
             this.pending.absences = true;
-            this.$app.apiGet(apiUrl)
+            this.$app.apiGet(apiUrl, options)
             .then( (data) => {
                 this.setOpenedPersonnelAbsences(data.result);
                 this.pending.absences = false;
@@ -140,8 +127,19 @@ export default {
          */
         routeToAbsenceConfig(absence) {
             this.$router.push('/personnel/'+this.openedElement.id+'/absence_details/'+absence.id+'/edit');
-        }
+        },
 
+        /**
+		 * Modifie la période sélectionnée pour l'affichage des informations
+		 * @param {Object} period Nouvelle période sélectionnée
+		 */
+		periodChange(period) {
+			this.selectedPeriod = period;
+            this.loadAbsences(this.openedElement.id, {
+                dd: period.period_start_date,
+                df: period.period_end_date
+            });
+		}
 
     },
 

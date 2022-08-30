@@ -11,7 +11,8 @@ export default createStore({
 		absences_validation: [],
 		absences: [],
 		openedPersonnelAbsences: [],
-		openedPersonnelManagers: []
+		openedPersonnelManagers: [],
+		personnelStats: null
 	},
 	getters: {
 		activeStructure(state) {
@@ -20,6 +21,19 @@ export default createStore({
 
 		primary_personnel(state) {
 			return state.elements.find(e => e.primary == true);
+		},
+
+		/**
+		 * Retourne les statistique de l'utilisateur ouvert
+		 * @param {Object} state Instance VueX
+		 * @returns {Object|null}
+		 */
+		openedPersonnelStats(state) {
+			if (state.openedElement) {
+				let stats = state.personnelStats[state.openedElement.id];
+				return stats ? stats : null;
+			}
+			return null;
 		}
 	},
 	mutations: {
@@ -277,6 +291,22 @@ export default createStore({
 			else {
 				state.openedPersonnelManagers = managers;
 			}
+		},
+
+		/**
+		 * Réalise une modification sur la collection des statistiques du personnel
+		 * 
+		 * @param {Object} state L'instance VueX
+		 * @param {Object} statsOptions 
+		 * - managers {Object} Statistique du personnel
+		 * - action {String} 'replace', 'reset'
+		 */
+		personnelStats(state, statsOptions) {
+			let stats = statsOptions.stats;
+			let action = statsOptions.action;
+
+			if (action == 'reset') state.personnelStats = [];
+			else state.personnelStats = stats;
 		}
 	},
 	actions: {
@@ -402,6 +432,14 @@ export default createStore({
 		},
 
 		/**
+		 * Réinitialise la collection des absences sélectionnées
+		 * @param {Object} context Instance VueX
+		 */
+		resetAbsenceValidation(context) {
+			context.commit('absences_validation', {action: 'reset'});
+		},
+
+		/**
 		 * Envoie une requête à l'API pour charger les données détaillées d'une absence :
 		 * - absence
 		 * - managers
@@ -508,6 +546,16 @@ export default createStore({
 		resetOpenedPersonnelManagers(context) {
 			context.commit('openedPersonnelManagers', { action: 'reset' });
 		},
+
+		/**
+		 * Remplace les statistiques du personnel
+		 * 
+		 * @param {Object} context Instance VueX
+		 * @param {Object} stats Statistique du personnel
+		 */
+		setPersonnelStats(context, stats) {
+			context.commit('personnelStats', { stats, action: 'replace' });
+		}
 	},
 	modules: {
 	}

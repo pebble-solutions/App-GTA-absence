@@ -1,21 +1,10 @@
 <template>
     <div class="card mb-3">
         <div class="card-body">
-            <div class="d-flex flex-wrap  justify-content-between align-items-center mb-2">
+
+            <div class="d-flex align-items-center justify-content-between">
                 <h3 class="card-title">Mes informations</h3>
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Année 2022
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">2021</a></li>
-                        <li><a class="dropdown-item" href="#">2020</a></li>
-                    </ul>
-                </div>
-                <div class="form-check form-switch form-check-reverse">
-                    <label class="form-check-label" for="flexSwitchCheckDefault">Graphiques</label>
-                    <input class="form-check-input" type="checkbox" role="switch" id="switchGraphique" @click="graphMode = !graphMode">
-                </div>
+                <span class="text-secondary">Du {{formatDateFr(period.period_start_date)}} au {{formatDateFr(period.period_end_date)}}</span>
             </div>
             
             <div class="row row-cols-1 row-cols-md-2 g-3">
@@ -23,19 +12,19 @@
                     <div class="card">
                         <div class="card-header">Demandes d'absence</div>
                         <div class="list-group list-group-flush">
-                            <a class="list-group-item text-center text-primary" href="#">Toutes mes demandes<i class="bi bi-arrow-up-right ms-2"></i></a>
                             <div class="d-flex justify-content-between list-group-item">
-                                <span class="col-4 text-center text-warning">en attente</span>
-                                <span class="col-4 text-center text-success" >validées</span>
-                                <span class="col-4 text-center text-danger">refusées</span>
-                            </div>
-                            <div id="progressBar" class="list-group-item" v-show="!graphMode">
-                                
-                                <StackedBar :bars="bars" :value="true"/>
-
+                                <span class="col-4 text-center text-warning">{{(selectedStats.total - selectedStats.approuved - selectedStats.refused)}}<br>En attente</span>
+                                <span class="col-4 text-center text-success" >{{selectedStats.approuved}}<br>Validées</span>
+                                <span class="col-4 text-center text-danger">{{selectedStats.refused}}<br>Refusées</span>
                             </div>
 
-                            <PersonalAbsenceGraph v-if="graphMode" />
+                            <div class="list-group-item">
+                                <PersonalAbsenceGraph :stats="selectedStats" />
+                            </div>
+
+                            <router-link :to="'personnel/'+primary_personnel.id" v-slot="{href, navigate}" custom>
+                                <a class="list-group-item text-center text-primary" :href="href" @click="navigate">Toutes mes demandes<i class="bi bi-arrow-up-right ms-2"></i></a>
+                            </router-link>
 
                         </div>
                     </div>
@@ -43,8 +32,8 @@
                 <div class="col">
                     <div class="card">
 
-                        <CounterTable :counters="counters" v-show="!graphMode" />
-                        <CounterGraph :counters="counters" :personnel="personnel" v-if="graphMode" />
+                        <CounterTable :stats="selectedStats.per_gta_declaration" v-if="displayMode == 'table'" />
+                        <CounterGraph :stats="selectedStats.per_gta_declaration" :personnel="primary_personnel" v-if="displayMode == 'chart' && primary_personnel" />
                         
                     </div>
                 </div>
@@ -56,25 +45,24 @@
 </template>
 <script>
 
-import {mapState} from 'vuex';
-// import {GoogleCharts} from 'google-charts';
-import pluralize from 'pluralize';
+import {mapGetters} from 'vuex';
 import CounterTable from './CounterTable.vue';
 import CounterGraph from './CounterGraph.vue';
-import StackedBar from './StackedBar.vue';
 import PersonalAbsenceGraph from './PersonalAbsenceGraph.vue';
+import formatDateFr from '../js/formatDateFr';
 
 export default {
 
     props: {
-        counters: Array,
-        personnel: Object,
-        
-        bars: Array,
-        percentage: {
-            type: Boolean,
-            default: false
+        stats: Object,
+        period: {
+            type:Object,
+            default: () => {}
         },
+		displayMode: {
+			type: String,
+			default: 'table'
+		}
     },
 
     data() {
@@ -82,41 +70,43 @@ export default {
         
             graphMode: false,
             manager: true,
+            selectedPeriod: null
             
         };
     },
     computed: {
-        ...mapState(["OpenedElement", "absences", "managers"])
+        ...mapGetters(["primary_personnel"]),
+
+        /**
+         * Retourne l'année de la période sélectionnée
+         * @returns {Number}
+         */
+        selectedYear() {
+            return this.period.year;
+        },
+
+        /**
+         * Retourne les statistique d'une période
+         * @returns {Object}
+         */
+        selectedStats() {
+            let stats = this.stats.per_period[this.selectedYear];
+            return stats ? stats : {};
+        }
     },
     methods: {
-
         
         /**
-         * Utilisation de la librairie pluralize
+         * Convertie une date SQL en date au format français
+         * @param {String} date Date au format YYYY-MM-DD
          */
-        pluralize(word, number, inclusive) {
-            return pluralize(word, number, inclusive);
-        },
-        /**
-         * affiche le google chart piechart avec les données fournies
-         */
+        formatDateFr(date) {
+            return formatDateFr(date);
+        }
         
         
     },
-    mounted() {
-        this.$store.commit("tmpElement", {
-            name: "",
-            description: ""
-        });
 
-        // GoogleCharts.load(this.pieChart);
-        // this.chartResize();
-
-        // window.addEventListener("resize", () => {
-        //         this.pieChart();
-        //     });
-    
-    },
-    components: { CounterTable, CounterGraph, StackedBar, PersonalAbsenceGraph}
+    components: { CounterTable, CounterGraph, PersonalAbsenceGraph}
 }
 </script>

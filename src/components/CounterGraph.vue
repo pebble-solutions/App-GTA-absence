@@ -1,5 +1,6 @@
 <template>
-    <div :id="'chart-personnel-'+personnel.id" style="width: 97%;"></div>
+    <div :id="'chart-personnel-'+personnel.id" style="width: 100%;" class="my-1" v-if="arrayStats.length"></div>
+    <div v-else class="card-body text-muted text-center"><i class="bi bi-bar-chart"></i> Pas de données à afficher</div>
 </template>
 
 <script>
@@ -9,8 +10,28 @@ import { GoogleCharts } from 'google-charts';
 export default {
 
     props: {
-        counters: Array,
+        stats: Object,
         personnel: Object
+    },
+
+    computed: {
+        /**
+         * Convertie l'objet de statistique en array lisible par google chart
+         * @returns {Array}
+         */
+        arrayStats() {
+            let ar = [];
+            for (const key in this.stats) {
+                ar.push(this.stats[key]);
+            }
+            return ar;
+        }
+    },
+
+    watch: {
+        stats() {
+            this.drawVisualization();
+        }
     },
 
     methods: {
@@ -19,53 +40,41 @@ export default {
          */
         drawVisualization() {
 
-            let div = document.getElementById("chart-personnel-"+this.personnel.id);
-
+            if (this.arrayStats.length) {
+                let div = document.getElementById("chart-personnel-"+this.personnel.id);
+    
                 let dataTable = [
-                    ["Compteur", "Acquis", "Pris", "Solde"]
+                    ["Compteur", "Pris", "Refusé"]
                 ];
     
-                this.counters.forEach(counter => {
-                    dataTable.push([counter.label, counter.acquis, counter.pris, counter.solde]);
+                this.arrayStats.forEach(counter => {
+                    dataTable.push([counter.label, counter.approuved, counter.refused]);
                 });
     
                 // Some raw data (not necessarily accurate)
                 let data = GoogleCharts.api.visualization.arrayToDataTable(dataTable);
                 let options = {
-                    //title: "Mon compteur",
-                    // vAxis: {title: 'Cups'},
-                    // hAxis: {title: 'Month'},
                     seriesType: "bars",
-                    // series: {3: {type: 'line'}},
                     series: {
-                        0: { color: "#0074d9", visibleInLegend: false },
-                        1: { color: "#0dcaf0", visibleInLegend: false },
-                        2: { color: "#198754", visibleInLegend: false }
-                    },
-                    // bars: 'vertical'
+                        0: { color: "#198754", visibleInLegend: false },
+                        1: { color: "#adb5bd", visibleInLegend: false }
+                    }
                 };
                 let chart = new GoogleCharts.api.visualization.ComboChart(div);
                 chart.draw(data, options);
-        }
+            }
+
+        },
 
     },
-    
-    // beforeMount(){
-    //     window.addEventListener("load", () => {
-    //         this.drawVisualization();
-    //     });
-    // },
+
+    beforeUnmount() {
+        window.removeEventListener("resize", this.drawVisualization)
+    },
 
     mounted() {
-        
         GoogleCharts.load(this.drawVisualization);
-
-        window.addEventListener("resize", () => {
-            this.drawVisualization();
-        });
-        // window.addEventListener("load", () => {
-        //     this.drawVisualization();
-        // });
+        window.addEventListener("resize", this.drawVisualization);
     },
     
 }

@@ -27,7 +27,6 @@ export default {
         ...mapState(['openedPersonnelManagers']),
 
         manager() {
-            console.log(this.openedPersonnelManagers);
             let manager = this.openedPersonnelManagers.find(m => m.id === this.absence.validation_personne_id);
             return manager ? manager : { cache_nom: 'non-renseigné' };
         }

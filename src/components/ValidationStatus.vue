@@ -1,6 +1,6 @@
 <template>
-    <span class="d-none d-md-block" :class="statusClass">{{statusLabel}}</span>
-    <i class="bi d-block d-md-none" :class="statusIconClass"></i>
+    <span class="d-none d-md-block ms-2" :class="statusClass">{{statusLabel}}</span>
+    <i class="bi d-block d-md-none ms-2" :class="statusIconClass"></i>
 </template>
 
 <script>

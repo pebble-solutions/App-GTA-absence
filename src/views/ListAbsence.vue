@@ -60,15 +60,10 @@ export default {
             let apiUrl = 'structurePersonnel/GET/'+529+'/absence';
 
             this.$app.apiGet(apiUrl)
-
             .then( (data) => {
-            this.listabsence = data.result;
-            console.log('data absence', data);
+                this.listabsence = data.result;
             })
-            // .catch(this.$app.catchError);
-            .catch((error) => {
-            console.log(error);
-            })
+            .catch(this.$app.catchError);
         },
         formatDateFr(date) {
 
@@ -82,7 +77,6 @@ export default {
     mounted() {
 
         this.DisplayList();
-        console.log('opened',this.openedElement);
     },
 
             /**copié dans le modèle

@@ -1,5 +1,5 @@
 <template>
-    <div class="accordion" id="accordionMonth">
+    <div class="accordion accordion-flush" id="accordionMonth">
         <div v-for="month in 12" :key="'mois-' + month" class="accordion-item">
             <AccordionMonthItem :month="month"></AccordionMonthItem>
         </div>

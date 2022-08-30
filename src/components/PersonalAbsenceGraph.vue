@@ -8,6 +8,15 @@ import {GoogleCharts} from 'google-charts';
 
 export default {
 
+    props: {
+        stats: Object
+    },
+
+    watch: {
+        stats() {
+            this.pieChart();
+        }
+    },
 
     methods: {
         pieChart() {
@@ -15,11 +24,12 @@ export default {
             let div = document.getElementById("piechart");
 
             if (div) {
+
                 let data = GoogleCharts.api.visualization.arrayToDataTable([
-                    ["Absences", "selon statut"],
-                    ["Validées", 4],
-                    ["Refusées", 1],
-                    ["En attente", 6],
+                    ["Absences", "Quantité"],
+                    ["Validées", this.stats.approuved],
+                    ["Refusées", this.stats.refused],
+                    ["En attente", (this.stats.total - this.stats.approuved - this.stats.refused)]
                 ]);
                 let options = {
                     //title: 'mes demandes d\'absence',

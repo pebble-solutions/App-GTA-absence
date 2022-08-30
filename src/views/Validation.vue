@@ -1,9 +1,9 @@
 <template>
-    <div class="container">
-        <h1 class="py-2">Demandes d'absence en attente</h1>
-            <!--<div class="card-body">Pour traiter</div> -->
+    <div class="container py-1">
+        <div class="lead text-center my-3" v-if="absences_validation.length > 0">{{absences_validation.length}} demandes sélectionnées</div>
+        <div class="lead my-3 text-secondary d-md-none" v-else>Demandes à valider</div>
 
-        <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-4">
+        <div v-for="abs in absences_validation" :key='abs.absence.id' class="card my-3">
             <div class="card-body">
                 Personnel: {{abs.absence.structure__personnel_id}}
                 <AbsenceConfigOverview 
@@ -30,18 +30,16 @@
             </div>
         </div>
         
-        <div v-else class="card"> 
-            <div class="card-header">
-                <h2>Traitement des demandes:</h2>
-            </div>
+        <div v-else class="card my-3">
             <div class="card-body">
-                <ul class="list-group list-group-flush list-group-numbered">
-                    <li class ="list-group-item"> Sélectionnez d'un clic les demandes à traiter dans la liste</li>
-                    <li class ="list-group-item"> Autorisez ou refusez les demandes sélectionnées</li>
-                    <li class ="list-group-item"> Commentez votre décision</li>
-                    <li class ="list-group-item"> Validez</li>
-                </ul>
+                <h2 class="card-title m-0 text-success text-center"><i class="bi bi-question-circle"></i></h2>
             </div>
+            <ol class="list-group list-group-flush list-group-numbered">
+                <li class ="list-group-item"> Sélectionnez d'un clic les demandes à traiter dans la liste</li>
+                <li class ="list-group-item"> Autorisez ou refusez les demandes sélectionnées</li>
+                <li class ="list-group-item"> Commentez votre décision</li>
+                <li class ="list-group-item"> Validez</li>
+            </ol>
         </div>
         
 
@@ -57,7 +55,7 @@
 </template>
 <script>
 
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
 import AppModal from '../components/pebble-ui/AppModal.vue';
 import AbsenceValidation from '../components/AbsenceValidation.vue';
@@ -88,6 +86,8 @@ export default {
     },
 
     methods: {
+        ...mapActions(['resetAbsenceValidation']),
+
         /**
          * Converti une date fourni au format francophone DD/MM/YYYY
          *
@@ -120,7 +120,6 @@ export default {
         },
 
         checkRouteMode(action){
-            console.log(action)
             if(action == 'authorize' || action == 'refuse') {
                 this.validation_action = action == 'authorize' ? true : false;
                 this.validation_modal = true;
@@ -137,8 +136,11 @@ export default {
     components: { AbsenceConfigOverview, AppModal, AbsenceValidation },
 
     beforeRouteUpdate(to) {
-        console.log(to)
         this.checkRouteMode(to.params.action);
+    },
+
+    beforeUnmount() {
+        this.resetAbsenceValidation();
     },
 
     mounted(){
@@ -148,7 +150,6 @@ export default {
         this.modal.addEventListener ('hidden.bs.modal', () => {
             this.$router.push('/validation');
         });
-        console.log(AbsenceValidation);
     }
 }
 

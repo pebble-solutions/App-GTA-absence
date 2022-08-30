@@ -11,7 +11,9 @@
         "aside": true,
         "app_mode": "default",
         "ppp": "partner",
-        "logos": null
+        "logos": null,
+        "backAction": "/",
+        "backNavigation": true
     },
     "cfgMenu": {
         "href": null
