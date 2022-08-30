@@ -1,12 +1,12 @@
 <template>
     <div class="list-group-item d-flex align-items-center py-1">
-        <div class="badge text-bg-secondary rounded-pill border-right border-secondary me-3">{{ getTwoDigit(periode.period_day)}}/{{getTwoDigit(periode.period_month)}}/{{periode.period_year}}</div>
+        <div class="badge text-bg-secondary rounded-pill border-right border-secondary me-3">{{formatDate(periodeDateSQL) }}</div>
         <div>{{getCodageNom()}}</div>
     </div>
 </template>
 
 <script>
-
+import formatDateLong from '../js/formatDateLong.js';
 
 export default {
     props: {
@@ -14,6 +14,12 @@ export default {
         absence: Object,
         declaration: Object,
         codages: Array,
+    },
+
+    computed: {
+        periodeDateSQL() {
+            return `${this.periode.period_year}-${this.getTwoDigit(this.periode.period_month)}-${this.getTwoDigit(this.periode.period_day)}`;
+        }
     },
 
     methods: {
@@ -48,6 +54,10 @@ export default {
             else {
                 return this.declaration.gta__codage_id;
             }
+        },
+
+        formatDate (date) {
+            return formatDateLong(date);
         }
 
 

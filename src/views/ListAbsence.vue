@@ -15,7 +15,7 @@
                     <div  class=" card-body">
                         <div  class ="list-group list-group-flush" v-for="abs in listabsence" :key="'absence'+abs.id">
                             <div class="list-group-item d-flex flex-row align-items-center">
-                                <label class="form-label">{{formatDateFr(abs.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(abs.df)}}</label>
+                                <label class="form-label">{{formatDayDate(abs.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(abs.df)}}</label>
                                 <label class="form-label">demande du {{formatDateFr(abs.dd)}} à </label>
                             </div>
                         </div>
@@ -70,7 +70,13 @@ export default {
             let newDate = new Date(date);
             let format = newDate.toLocaleDateString('fr-FR');
             return format;
-        }   
+        },
+        formatDayDate(date) {
+
+            let newDate = new Date(date);
+            let formatDay =newDate.toDateString();
+            return formatDay;
+        }  
 
     },
 

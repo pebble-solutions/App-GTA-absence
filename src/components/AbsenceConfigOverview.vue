@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="lead">{{formatDateFr(absence.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFr(absence.df)}}</div>
+            <div class="lead">{{formatDateDebut(absence.dd)}} <i class="bi bi-chevron-compact-right"></i> {{formatDateFin(absence.df)}}</div>
             <ValidationStatus :absence="absence"  class-prefix="badge text-bg-" />
         </div>
 
@@ -46,6 +46,8 @@
 import { mapGetters, mapState } from 'vuex';
 import AbsencePeriode from './AbsencePeriode.vue';
 import ValidationStatus from './ValidationStatus.vue';
+import formatDateShort from '../js/formatDateShort.js';
+import formatDateLong from '../js/formatDateLong.js';
 
 export default {
     props: {
@@ -78,7 +80,14 @@ export default {
             let newDate = new Date(date);
             let format = newDate.toLocaleDateString('fr-FR');
             return format;
-        }
+        },
+        formatDateDebut(date) {
+            return formatDateShort(date);
+        },
+        formatDateFin(date) {
+            return formatDateLong(date);
+        },
+
     },
 
     computed: {
