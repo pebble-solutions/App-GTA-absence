@@ -60,7 +60,7 @@ export default {
         return {
             pending: {
                 extended: true,
-                absences:true
+                absences:false
             },
             error: null,
             codages: [],
