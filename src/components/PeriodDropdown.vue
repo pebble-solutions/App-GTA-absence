@@ -54,13 +54,13 @@ export default {
         periods() {
             let periods = {};
 
-            // for (const key in this.personnelStats) {
-            //     for (const year in this.personnelStats[key].per_period) {
-            //         if (!periods[year]) {
-            //             periods[year] = this.personnelStats[key].per_period[year];
-            //         }
-            //     }
-            // }
+            for (const key in this.personnelStats) {
+                for (const year in this.personnelStats[key].per_period) {
+                    if (!periods[year]) {
+                        periods[year] = this.personnelStats[key].per_period[year];
+                    }
+                }
+            }
 
             return periods;
         }
