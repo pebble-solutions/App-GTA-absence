@@ -71,19 +71,10 @@ export default {
             return result;
         },
 
-        /**
-         * Retourne une date au format français standard JJ/MM/AAAA
-         * @param {Date|String} date La date à transformer
-         * @returns {String}
-         */
-        formatDateFr(date) {
-            let newDate = new Date(date);
-            let format = newDate.toLocaleDateString('fr-FR');
-            return format;
-        },
         formatDateDebut(date) {
             return formatDateShort(date);
         },
+        
         formatDateFin(date) {
             return formatDateLong(date);
         },

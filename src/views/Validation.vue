@@ -63,6 +63,7 @@ import AbsenceConfigOverview from '../components/AbsenceConfigOverview.vue';
 import AppModal from '../components/pebble-ui/AppModal.vue';
 import AbsenceValidation from '../components/AbsenceValidation.vue';
 import UserImage from '../components/pebble-ui/UserImage.vue';
+import formatDateFr from '../js/formatDateFr';
 
 
 export default {
@@ -100,9 +101,7 @@ export default {
          * @returns {String}
          */
         formatDateFr(date) {
-            let newDate = new Date(date);
-            let format = newDate.toLocaleDateString("fr-FR");
-            return format;
+            return formatDateFr(date, 'long');
         },
         /**
          * ferme la modal de validation et supprime les absences sélectionnées

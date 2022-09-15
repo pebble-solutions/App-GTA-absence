@@ -17,6 +17,7 @@
 import { mapActions } from 'vuex';
 import ValidationStatus from './ValidationStatus.vue';
 //import dateAndTime from 'date-and-time';
+import formatDateFr from '../js/formatDateFr';
 
 
 export default {
@@ -44,9 +45,7 @@ export default {
 		 * @returns {String}
 		 */
 		formatDateFr(date) {
-			let newDate = new Date(date);
-			let format = newDate.toLocaleDateString("fr-FR");
-			return format;
+			return formatDateFr(date, 'long');
 		},
 
 		/**

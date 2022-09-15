@@ -17,6 +17,8 @@
 
 <script>
 
+import formatDateFr from '../js/formatDateFr';
+
 export default {
     props: {
         absence: Object
@@ -25,10 +27,7 @@ export default {
     methods: {
 
         formatDateFr(date) {
-
-            let newDate = new Date(date);
-            let format = newDate.toLocaleDateString('fr-FR');
-            return format;
+            return formatDateFr(date);
         }        
 
     }

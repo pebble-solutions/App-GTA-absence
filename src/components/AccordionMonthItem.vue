@@ -18,6 +18,7 @@
 <script>
 import { mapState } from 'vuex'
 import AbsenceItem from './AbsenceItem.vue';
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
@@ -36,7 +37,7 @@ export default {
          * @return {Array}
          */
         absences() {
-            let abs = this.openedPersonnelAbsences.filter(abs => (new Date(abs.dd)).getMonth() + 1 == this.month.toFixed(2));
+            let abs = this.openedPersonnelAbsences.filter(abs => (new Date(sqlDateToIso(abs.dd))).getMonth() + 1 == this.month.toFixed(2));
             return abs;
         },
 
