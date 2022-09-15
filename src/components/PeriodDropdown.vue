@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown">
-        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-calendar me-2"></i> Période {{selectedYear}}
+        <button id="periodsButton" class="btn btn-light" :class="{'dropdown-toggle' : Object.entries(periods).length > 0}" type="button" data-bs-toggle="dropdown" aria-expanded="false" :disabled="Object.entries(periods).length > 0? false : true">
+            <i class="bi bi-calendar me-2"></i> <span v-if="Object.entries(periods).length === 0">Aucune</span> Période {{selectedYear}}
         </button>
         <ul class="dropdown-menu">
             <li v-for="(item, period_year) in periods" :key="'period-item-'+period_year">
