@@ -96,8 +96,8 @@ export default {
             this.$app.apiPost('structurePersonnel/POST/'+this.openedElement.id+'/absence/'+this.absence.id, {
                 absence_commentaire: this.absenceTarget.commentaire,
                 absence_nx: this.absenceTarget.validation_personne_id,
-                declaration_id: JSON.stringify(declarations),
-                codage_id: JSON.stringify(codages),
+                declaration_id: declarations.join(','),
+                codage_id: codages.join(','),
                 notifier: 1,
                 delete_zero_codage: true
             })
