@@ -36,7 +36,7 @@ export default {
          */
         statusIconClass () {
             let dispClass = this.displayMode == 'icon' ? ' d-block' : ' d-block d-md-none';
-            return 'text-'+this.getStringFromStatusArray(['success', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle'])+dispClass;
+            return 'text-'+this.getStringFromStatusArray(['black', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle'])+dispClass;
         },
 
         /**
