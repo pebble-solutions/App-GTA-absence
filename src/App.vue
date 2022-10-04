@@ -54,9 +54,12 @@
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="d-flex align-items-center">
 							<UserImage size="user-image-sm" :name="el.cache_nom" className="me-2" />
-							{{el.cache_nom}} 
-							<i class="bi bi-check-lg ms-2" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i>
+							<span>
+								{{el.cache_nom}} 
+								<i class="bi bi-check-lg ms-2" :class="{'text-success': $route.params.id != primary_personnel.id}" v-if="el.id == primary_personnel.id"></i>
+							</span>
 						</div>
+						<span class="badge text-bg-warning" v-if="getPendingFromPersonnel(el)">{{getPendingFromPersonnel(el)}}</span>
 					</div>
 				</AppMenuItem>
 			</AppMenu>
@@ -115,7 +118,7 @@ export default {
 	},
 
 	computed: {
-		...mapState(['elements', 'openedElement', 'absences']),
+		...mapState(['elements', 'openedElement', 'absences', 'personnelStats']),
 		...mapGetters(['primary_personnel']),
 
 		/**
@@ -235,6 +238,28 @@ export default {
 		refreshData() {
 			this.listElements()
 			.then(() => this.loadAbsencesValidation());
+		},
+
+		/**
+		 * Retourne le nombre de demandes en attente pour un personnel donné.
+		 * 
+		 * @param {Object} personnel Le personnel depuis lequel la recherche est faite
+		 * 
+		 * @returns {Number}
+		 */
+		getPendingFromPersonnel(personnel) {
+
+			let val = 0;
+
+			if (this.personnelStats) {
+				let stats = this.personnelStats[personnel.id];
+
+				if (stats) {
+					val = stats.total - stats.approuved - stats.refused;
+				}
+			}
+
+			return val;
 		},
 
 		...mapActions(['closeElement'])
