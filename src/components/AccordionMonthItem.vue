@@ -1,17 +1,18 @@
 <template>
-    <h3 class="accordion-header" :id="'panelMonth-heading'+month">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#panelMonth-collapse'+month" aria-expanded="false" :aria-controls="'panelMonth-collapse'+month">
+    <h3 class="accordion-header" :id="'panelMonth-heading'+month.getTime()">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#panelMonth-collapse'+month.getTime()" aria-expanded="false" :aria-controls="'panelMonth-collapse'+month.getTime()">
             <span class="badge me-2" :class="classByQt(absencesOpenedSum, 'bg-warning', 'bg-light text-muted')"><i class="bi bi-question"></i> {{absencesOpenedSum}}</span>
             <span class="badge me-2" :class="classByQt(absencesApprouvedSum, 'bg-success', 'bg-light text-muted')"><i class="bi bi-check-lg"></i> {{absencesApprouvedSum}}</span>
             <span class="badge me-2" :class="classByQt(absencesRefusedSum, 'bg-danger', 'bg-light text-muted')"><i class="bi bi-x"></i> {{absencesRefusedSum}}</span>
-            {{monthDictFr[month-1]}}
+            {{monthDictFr[month.getMonth()]}} {{month.getFullYear()}}
         </button>
     </h3>
 
-    <div :id="'panelMonth-collapse'+month" class="accordion-collapse collapse" :aria-labelledby="'panelMonth-heading'+month">
+    <div :id="'panelMonth-collapse'+month.getTime()" class="accordion-collapse collapse" :aria-labelledby="'panelMonth-heading'+month.getTime()">
         <div v-if="absences.length > 0" class="list-group list-group-flush">
             <AbsenceItem :absence="absence" v-for="absence in absences" :key="'absence-'+absence.id" />
         </div>
+        <div class="text-muted m-3" v-else><i class="bi bi-x-square me-2"></i> Pas de demande sur ce mois.</div>
     </div>
 </template>
 
@@ -22,7 +23,7 @@ import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     props: {
-        month: Number
+        month: Date
     },
     data() {
         return {
@@ -37,7 +38,7 @@ export default {
          * @return {Array}
          */
         absences() {
-            let abs = this.openedPersonnelAbsences.filter(abs => (new Date(sqlDateToIso(abs.dd))).getMonth() + 1 == this.month.toFixed(2));
+            let abs = this.openedPersonnelAbsences.filter(abs => (new Date(sqlDateToIso(abs.dd))).getMonth() == this.month.getMonth());
             return abs;
         },
 

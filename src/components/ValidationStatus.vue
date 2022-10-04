@@ -1,7 +1,13 @@
 <template>
-    <span class="ms-2" :class="statusClass">{{statusLabel}}</span>
-    <i class="bi ms-2" :class="statusIconClass"></i>
+    <span class="ms-2 status-label" :class="statusClass">{{statusLabel}}</span>
+    <i class="bi ms-2 status-label" :class="statusIconClass"></i>
 </template>
+
+<style lang="scss" scoped>
+.active .status-label.text-success {
+    color:white !important;
+}
+</style>
 
 <script>
 
@@ -36,7 +42,7 @@ export default {
          */
         statusIconClass () {
             let dispClass = this.displayMode == 'icon' ? ' d-block' : ' d-block d-md-none';
-            return 'text-'+this.getStringFromStatusArray(['black', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle'])+dispClass;
+            return 'text-'+this.getStringFromStatusArray(['success', 'danger', 'warning'])+ ' ' + this.getStringFromStatusArray(['bi-check-circle', 'bi-x-circle ', 'bi-circle'])+dispClass;
         },
 
         /**

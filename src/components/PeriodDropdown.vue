@@ -130,12 +130,20 @@ export default {
         }
     },
 
+    beforeUnmount() {
+        this.$app.clearEventListener("current-date-change");
+    },
+
     /**
      * Lors de l'initialisation, l'année active est sélectionnée par défaut
      */
     mounted() {
         let dateSelected = new Date();
         this.selectedPeriod = this.getPeriodFromDate(dateSelected, 'period');
+
+        this.$app.addEventListener("current-date-change", (date) => {
+            this.selectedPeriod = this.getPeriodFromDate(date, 'period');
+        });
     }
 }
 

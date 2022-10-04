@@ -191,6 +191,7 @@ export default {
 			})
 			.then((stats) => {
 				this.setPersonnelStats(stats);
+				this.$app.dispatchEvent("data-refreshed");
 			})
 			.catch(this.$app.catchError)
 			.finally(() => this.pending.elements = false);

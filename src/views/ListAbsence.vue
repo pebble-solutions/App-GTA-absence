@@ -84,24 +84,6 @@ export default {
 
         this.DisplayList();
     },
-
-            /**copié dans le modèle
-            beforeRouteUpdate(to) {
-                this.load(to.params.id);
-            },
-            beforeRouteLeave(from, to, next) {
-                this.$store.dispatch('unload');
-                next();
-            },
-            mounted() {
-                this.load(this.$route.params.id);
-            },
-            */
-    };
-
-
-
-
-
+};
 
 </script>

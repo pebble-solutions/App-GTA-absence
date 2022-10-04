@@ -35,7 +35,7 @@
                     </AlertMessage>
                 </div>
 
-                <AccordionMonth v-if="!pending.absences"></AccordionMonth>
+                <AccordionMonth v-if="!pending.absences && selectedPeriod" :period="selectedPeriod"></AccordionMonth>
 
             </div>
         </div>
@@ -54,6 +54,7 @@ import AccordionMonth from '../components/AccordionMonth.vue';
 import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
 import PeriodDropdown from '../components/PeriodDropdown.vue';
 import UserImage from '../components/pebble-ui/UserImage.vue';
+import sqlDateToIso from '../js/sqlDateToIso';
 
 export default {
     data() {
@@ -68,6 +69,7 @@ export default {
         }
     },
 
+    emits: ['refresh'],
     
     computed: {
         ...mapState(['openedElement', 'openedPersonnelAbsences', 'openedPersonnelManagers', 'personnelStats'])
@@ -120,10 +122,26 @@ export default {
 
         /**
          * Ajoute une absence à la liste des absences.
+         * Si l'absence est sur la période sélectionnée, ajout simple. Si l'absence est sur une autre période,
+         * on recharge les statistiques et on bascule sur la nouvelle période.
+         * 
          * @param {Object} absence Une absence
          */
         addAbsence(absence) {
-            this.addOpenedPersonnelAbsences([absence])
+            let dateAbsence = new Date(sqlDateToIso(absence.dd));
+            let datePeriodStart = new Date(this.selectedPeriod.period_start_date);
+            let datePeriodEnd = new Date(this.selectedPeriod.period_end_date);
+
+            // L'absence est sur la période chargée, ajout simple
+            if (dateAbsence.getTime() >= datePeriodStart.getTime && dateAbsence.getTime() <= datePeriodEnd.getTime()) {
+                this.addOpenedPersonnelAbsences([absence]);
+            }
+            // L'absence est sur une autre période, rafraichissement des données
+            else {
+                this.$emit('refresh');
+                this.$app.dispatchEvent("current-date-change", dateAbsence);
+            }
+
         },
 
         /**
