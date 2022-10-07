@@ -1,6 +1,6 @@
 <template>
-    <a href="#" @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
-		:class="{active: isChecked}">
+    <button @click.prevent="toggleSelection()" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
+		:class="{active: isChecked}" :disabled="pending">
 		<div class="d-flex align-items-center">
 			<i class="bi me-3" :class="{'bi-square':!isChecked, 'bi-check-square':isChecked}"></i>
 			<div>
@@ -8,8 +8,9 @@
 				<span :class="{'text-secondary': !isChecked}">{{formatDateFr(absence.dd)}} > {{formatDateFr(absence.df)}}</span>
 			</div>
 		</div>
-		<ValidationStatus :absence="absence" display-mode="icon" class-prefix="badge text-bg-"/>
-    </a>
+		<ValidationStatus :absence="absence" display-mode="icon" class-prefix="badge text-bg-" v-if="!pending" />
+		<span class="spinner-border spinner-border-sm" role="status" v-else></span>
+    </button>
 
 </template>
 

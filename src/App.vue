@@ -48,6 +48,9 @@
 			<AppMenu v-if="$route.name == 'validation'">
 				<Spinner v-if="pending.validations" />
 				<ValidationItem v-for="absence in absences" :key="'absence-item-'+absence.id" :absence="absence" v-else></ValidationItem>
+				<div class="alert alert-info m-2" v-if="!pending.validations && !absences.length">
+					<i class="bi bi-info-circle-fill"></i> Aucune demande d'absence à traiter.
+				</div>
 			</AppMenu>
 			<AppMenu v-else>
 				<AppMenuItem :href="'/personnel/'+el.id" v-for="el in elements" :key="el.id">

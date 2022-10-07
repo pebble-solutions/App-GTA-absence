@@ -17,7 +17,11 @@
             <div class="col-12 col-md-4">
                 <label for="" class="form-label">&nbsp;</label>
                 <button class="form-control btn btn-outline-primary" type="submit" :disabled="pending">
-                    <span>Créer</span>
+                    <span v-if="pending">
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        <span>Chargement...</span>
+                    </span>
+                    <span v-else>Créer</span>
                 </button>
             </div>
         </div>

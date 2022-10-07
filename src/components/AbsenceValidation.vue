@@ -10,7 +10,10 @@
         </div>
 
         <div class="d-grid my-3">
-            <button class="btn btn-primary" :disabled="pending">Terminer</button>
+            <button class="btn btn-primary" :disabled="pending">
+                <span v-if="pending"><span class="spinner-border spinner-border-sm" role="status"></span> Enregistrement...</span>
+                <span v-else>Terminer</span>
+            </button>
         </div>
     </form>
 </template>

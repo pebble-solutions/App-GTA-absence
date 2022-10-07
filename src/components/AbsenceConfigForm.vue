@@ -24,7 +24,10 @@
         </div>
 
         <div class="d-flex justify-content-end my-2">
-            <button type="submit" class="btn btn-primary" :disabled="pending">Valider <i class="bi bi-check"></i></button>
+            <button type="submit" class="btn btn-primary" :disabled="pending">
+                <span v-if="pending"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...</span>
+                <span v-else>Valider <i class="bi bi-check"></i></span>
+            </button>
             <button type="button" class="btn btn-secondary ms-2" @click.prevent="$emit('cancel')" v-if="cancelButton">Annuler</button>
         </div>
     </form>

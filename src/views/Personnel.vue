@@ -60,8 +60,8 @@ export default {
     data() {
         return {
             pending: {
-                extended: true,
-                absences:false
+                absences:true,
+                personnel: true
             },
             error: null,
             codages: [],
@@ -82,7 +82,6 @@ export default {
         ...mapActions(['setOpenedPersonnelAbsences', 'addOpenedPersonnelAbsences', 'unloadPersonnel', 'setOpenedPersonnelManagers']),
 
         load(id) {
-            this.pending.extended;
             this.$store.dispatch('load', id);
             if (this.selectedPeriod) {
                 this.loadAbsences(id, {
@@ -115,9 +114,11 @@ export default {
             this.$app.apiGet(apiUrl, options)
             .then( (data) => {
                 this.setOpenedPersonnelAbsences(data.result);
-                this.pending.absences = false;
             })
-            .catch(this.$app.catchError);
+            .catch(this.$app.catchError)
+            .finally(() => {
+                this.pending.absences = false;
+            });
         },
 
         /**

@@ -24,10 +24,14 @@
 					<AbsenceForm @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
 				</div>
 			</div>
-	
-			<PersonalInformationCard :stats="personnel_stats" :display-mode="displayMode" :period="selectedPeriod" v-if="personnel_stats && selectedPeriod" />
 			
-			<TeamInformationList :period="selectedPeriod" :display-mode="displayMode" v-if="personnelStats && selectedPeriod" />
+			<div v-if="isPending" class="text-center">
+				<Spinner></Spinner>
+			</div>
+			<div v-else>
+				<PersonalInformationCard :stats="personnel_stats" :display-mode="displayMode" :period="selectedPeriod" v-if="personnel_stats && selectedPeriod" />
+				<TeamInformationList :period="selectedPeriod" :display-mode="displayMode" v-if="personnelStats && selectedPeriod" />
+			</div>
 			
 		</div>
 	</div>
@@ -49,6 +53,7 @@ import PersonalInformationCard from '../components/PersonalInformationCard.vue';
 import TeamInformationList from '../components/TeamInformationList.vue';
 import PeriodDropdown from '../components/PeriodDropdown.vue';
 import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
+import Spinner from '../components/pebble-ui/Spinner.vue';
 
 export default {
 	name: 'Home',
@@ -88,7 +93,7 @@ export default {
 		}
 	},
 
-	components: { AbsenceForm, PersonalInformationCard, TeamInformationList, PeriodDropdown, HeaderToolbar },
+	components: { AbsenceForm, PersonalInformationCard, TeamInformationList, PeriodDropdown, HeaderToolbar, Spinner },
 
 	methods: {
 
