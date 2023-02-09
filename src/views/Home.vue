@@ -15,6 +15,7 @@
 				<button class="btn btn-light" @click.prevent="$emit('refresh')" title="Actualiser les données" :disabled="isPending">
 					<i class="bi bi-arrow-clockwise" v-if="!isPending"></i>
 					<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-else></span>
+					<span class="d-none d-md-inline ms-1">Rafraîchir</span>
 				</button>
 			</div>
 		</HeaderToolbar>
