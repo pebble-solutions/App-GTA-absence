@@ -3,40 +3,46 @@
         <Spinner v-if="pending.datas" />
 
         <template v-else>
-            <AbsenceConfigOverview 
-                :absence="absence" 
-                :periodes="periodes"
-                :codages="codages"
-                :declarations="declarations"
-
-                :editable="isEditable"
-
-                @edit-mode="setActionRoute('edit')"
-                @authorize="setActionRoute('authorize')"
-                @refuse="setActionRoute('refuse')"
+            <template v-if="absence">
+                <AbsenceConfigOverview 
+                    :absence="absence" 
+                    :periodes="periodes"
+                    :codages="codages"
+                    :declarations="declarations"
+    
+                    :editable="isEditable"
+    
+                    @edit-mode="setActionRoute('edit')"
+                    @authorize="setActionRoute('authorize')"
+                    @refuse="setActionRoute('refuse')"
+                    
+                    v-if="mode == 'overview'" />
+    
+                <AbsenceConfigForm
+                    :absence="absence" 
+                    :periodes="periodes"
+                    :codages="codages"
+                    :declarations="declarations"
+    
+                    @recorded="refreshAndSwitch"
+                    @cancel="switchToOverviewMode"
+                    
+                    v-else-if="mode == 'edit'" />
                 
-                v-if="mode == 'overview'" />
+                <AbsenceValidation 
+                    :absences="[absence]"
+                    :validation_action="validation_action"
+    
+                    @recorded="refreshAbsenceAndSwitch"
+                    @cancel="switchToOverviewMode"
+    
+                    v-else-if="mode == 'validation'"
+                    />
+            </template>
 
-            <AbsenceConfigForm
-                :absence="absence" 
-                :periodes="periodes"
-                :codages="codages"
-                :declarations="declarations"
-
-                @recorded="refreshAndSwitch"
-                @cancel="switchToOverviewMode"
-                
-                v-else-if="mode == 'edit'" />
-            
-            <AbsenceValidation 
-                :absences="[absence]"
-                :validation_action="validation_action"
-
-                @recorded="refreshAbsenceAndSwitch"
-                @cancel="switchToOverviewMode"
-
-                v-else-if="mode == 'validation'"
-                />
+            <template v-else>
+                <alert-message icon="bi-calendar-x" variant="danger">Aucune demande d'absence enregistrée</alert-message>
+            </template>
         </template>
     </AppModal>
 
@@ -49,6 +55,7 @@ import AppModal from '../components/pebble-ui/AppModal.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceConfigForm from '../components/AbsenceConfigForm.vue';
 import AbsenceValidation from '../components/AbsenceValidation.vue';
+import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
 
 export default {
     
@@ -69,7 +76,7 @@ export default {
 
     computed: {
         ...mapState(['openedElement']),
-        ...mapGetters(['primary_personnel', 'openedPersonnelAbsences']),
+        ...mapGetters(['primary_personnel', 'openedPersonnelAbsences',]),
         
         /**
          * Contrôle si l'élément est éditable. Un élément est éditable dans les condtions suivantes
@@ -85,10 +92,10 @@ export default {
         }
     },
 
-    components: { AbsenceConfigOverview, AppModal, Spinner, AbsenceConfigForm, AbsenceValidation },
+    components: { AbsenceConfigOverview, AppModal, Spinner, AbsenceConfigForm, AbsenceValidation, AlertMessage },
 
     methods: {
-        ...mapActions(['updateOpenedPersonnelAbsences']),
+        ...mapActions(['updateOpenedPersonnelAbsences', 'removeOpenedPersonnelAbsences']),
 
         /**
          * Met à jour les informations stockées au niveau de data et passe en mode overview
@@ -99,8 +106,13 @@ export default {
          * - absence
          */
         refreshAndSwitch(payload) {
+            if (payload) {
+                this.updateOpenedPersonnelAbsences([payload.absence]);
+            }
+            else {
+                this.removeOpenedPersonnelAbsences([this.absence]);
+            }
             this.refreshDatas(payload);
-            this.updateOpenedPersonnelAbsences([payload.absence]);
             this.switchToOverviewMode();
         },
 
@@ -124,8 +136,15 @@ export default {
          * - absence
          */
         refreshDatas(payload) {
-            for (const key in payload) {
-                this[key] = payload[key];
+            if (payload) {
+                for (const key in payload) {
+                    this[key] = payload[key];
+                }
+            }
+            else {
+                this.absence = null;
+                this.declarations = [];
+                this.codages = [];
             }
         },
 
@@ -133,7 +152,7 @@ export default {
          * Bascule en mode consultation. La route est modifiée.
          */
         switchToOverviewMode() {
-            this.$router.push('/personnel/'+this.openedElement.id+'/absence_details/'+this.absence.id);
+            this.$router.push('/personnel/'+this.openedElement.id+'/absence_details/'+this.absence?.id);
         },
 
         /**
