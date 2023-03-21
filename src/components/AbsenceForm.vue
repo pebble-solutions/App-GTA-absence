@@ -1,6 +1,5 @@
 <!--
     Affichage d'un formulaire pour créer un nouvelle demande d'absence.
-
     Événements émits :
     - add-absence Object absence : lorsque l'absence est enregistée sur le serveur
     - absence-recorded Object absence : lorsque l'ensemble du processus est terminé
