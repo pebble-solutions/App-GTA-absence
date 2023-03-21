@@ -86,7 +86,8 @@ export default {
             if (this.selectedPeriod) {
                 this.loadAbsences(id, {
                     dd: this.selectedPeriod.period_start_date,
-                    df: this.selectedPeriod.period_end_date
+                    df: this.selectedPeriod.period_end_date,
+                    limit: 100
                 });
             }
             else {
@@ -164,7 +165,8 @@ export default {
 			this.selectedPeriod = period;
             this.loadAbsences(this.openedElement.id, {
                 dd: period.period_start_date,
-                df: period.period_end_date
+                df: period.period_end_date,
+                limit: 100
             });
 		}
 
