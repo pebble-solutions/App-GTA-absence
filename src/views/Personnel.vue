@@ -89,6 +89,9 @@ export default {
                     df: this.selectedPeriod.period_end_date
                 });
             }
+            else {
+                this.pending.absences = false;
+            }
         },
         
 
