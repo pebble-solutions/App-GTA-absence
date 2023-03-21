@@ -83,9 +83,7 @@ export default {
                 this.periodesAbsence = data.periode;
                 this.absence = data.absence[0];
 
-                this.$emit('add-absence', this.absence)
-
-                //this.addAbsence(this.absence);
+                this.$emit('add-absence', this.absence);
 
                 let apiUrl = 'structurePersonnel/GET/'+this.primary_personnel.id+'/absence/'+this.absence.id+'/codage';
                 return this.$app.apiGet(apiUrl);

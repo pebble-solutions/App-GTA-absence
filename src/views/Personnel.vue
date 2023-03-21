@@ -90,6 +90,9 @@ export default {
                     limit: 100
                 });
             }
+            else {
+                this.pending.absences = false;
+            }
         },
         
 
