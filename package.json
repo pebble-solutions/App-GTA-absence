@@ -11,11 +11,11 @@
     "@popperjs/core": "^2.11.2",
     "@vuepic/vue-datepicker": "3.5.3",
     "axios": "^0.25.0",
-    "bootstrap": "^5.2.0-beta1",
-    "bootstrap-icons": "^1.8.0",
+    "bootstrap": "^5.2.2",
+    "bootstrap-icons": "^1.10.2",
     "core-js": "^3.6.5",
-    "date-and-time": "^2.4.0",
-    "firebase": "^9.6.9",
+    "date-and-time": "^2.4.1",
+    "firebase": "^9.13.0",
     "google-charts": "^2.0.0",
     "jwt-decode": "^3.1.2",
     "pluralize": "^8.0.0",
@@ -25,15 +25,17 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@babel/core": "^7.21.4",
+    "@babel/eslint-parser": "^7.21.3",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-plugin-router": "~5.0.8",
+    "@vue/cli-plugin-vuex": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0",
+    "eslint": "^8.37.0",
+    "eslint-plugin-vue": "^9.10.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2"
   },
@@ -47,9 +49,11 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    }
   },
   "browserslist": [
     "> 1%",

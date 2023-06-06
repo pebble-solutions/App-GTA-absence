@@ -72,14 +72,14 @@ export default {
     emits: ['refresh'],
     
     computed: {
-        ...mapState(['openedElement', 'openedPersonnelAbsences', 'openedPersonnelManagers', 'personnelStats'])
+        ...mapState(['openedElement', 'openedPersonnelAbsences', 'personnelStats'])
     },
 
     components: { Spinner, AbsenceForm, AlertMessage, AccordionMonth, HeaderToolbar, PeriodDropdown, UserImage },
 
     methods: {
 
-        ...mapActions(['setOpenedPersonnelAbsences', 'addOpenedPersonnelAbsences', 'unloadPersonnel', 'setOpenedPersonnelManagers']),
+        ...mapActions(['setOpenedPersonnelAbsences', 'addOpenedPersonnelAbsences', 'unloadPersonnel']),
 
         load(id) {
             this.$store.dispatch('load', id);
@@ -93,19 +93,6 @@ export default {
             else {
                 this.pending.absences = false;
             }
-        },
-        
-
-        /**
-         * Récupère la liste des managers disponibles pour le personnel en cours
-         */
-        listManager() {
-            let apiUrl = 'structurePersonnel/GET/'+this.openedElement.id+'/nx';
-            this.$app.apiGet(apiUrl)
-            .then((data) => {
-                this.setOpenedPersonnelManagers(data);
-            })
-            .catch(this.$app.catchError);
         },
     
 
@@ -185,7 +172,6 @@ export default {
 
     mounted() {
         this.load(this.$route.params.id);
-        this.listManager();
     }
 }
 </script>

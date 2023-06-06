@@ -114,7 +114,8 @@ export default {
 			cfgSlots: CONFIG.cfgSlots,
 			pending: {
 				elements: true,
-				validations: true
+				validations: true,
+				managers: true
 			},
 			isConnectedUser: false
 		}
@@ -148,12 +149,13 @@ export default {
 
 		primary_personnel() {
 			this.loadAbsencesValidation();
+			this.loadManagers();
 		}
 	},
 
 	methods: {
 
-		...mapActions(['setPersonnelStats']),
+		...mapActions(['setPersonnelStats', 'closeElement', 'setOpenedPersonnelManagers']),
 
 		/**
 		 * Met à jour les informations de l'utilisateur connecté
@@ -265,7 +267,19 @@ export default {
 			return val;
 		},
 
-		...mapActions(['closeElement'])
+		/**
+         * Récupère la liste des managers disponibles pour le personnel en cours
+         */
+		loadManagers() {
+			this.pending.managers = true;
+
+            return this.$app.apiGet('structurePersonnel/GET/'+this.primary_personnel.id+'/nx')
+            .then((data) => {
+                this.setOpenedPersonnelManagers(data);
+            })
+            .catch(this.$app.catchError)
+			.finally(() => this.pending.managers = false);
+        },
 	},
 
 	components: { AppWrapper, AppMenu, AppMenuItem, ValidationItem, UserImage, Spinner },
