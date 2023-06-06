@@ -3,6 +3,7 @@
     "name": "gta-absence",
     "domains": {
         "prod": "pebble.solutions",
+        "test": "pebble.recipes",
         "dev": "localhost"
     },
     "cfg": {
@@ -31,6 +32,11 @@
             "authServer": "auth.pebble.solutions",
             "tls": true
         },
+        "test": {
+            "pas": true,
+            "authServer": "auth.pebble.solutions",
+            "tls": true
+        },
         "dev": {
             "pas": true,
             "authServer": "127.0.0.1:3333",
@@ -39,6 +45,14 @@
     },
     "firebaseConfig": {
         "prod": {
+            "apiKey": "AIzaSyAm-yEHEBuXt_2frDrNrH2o3mT0Ffj_4v0",
+            "authDomain": "ace-charter-310713.firebaseapp.com",
+            "projectId": "ace-charter-310713",
+            "storageBucket": "ace-charter-310713.appspot.com",
+            "messagingSenderId": "914156232758",
+            "appId": "1:914156232758:web:e0bbb3962a7571c068f897"
+        },
+        "test": {
             "apiKey": "AIzaSyAm-yEHEBuXt_2frDrNrH2o3mT0Ffj_4v0",
             "authDomain": "ace-charter-310713.firebaseapp.com",
             "projectId": "ace-charter-310713",

@@ -20,9 +20,20 @@
 			</div>
 		</HeaderToolbar>
 		<div class="container py-2" v-if="$store.state.login">
-			<div class="card mb-3">
-				<div class="card-body">
-					<AbsenceForm @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
+			<div class="row mb-3">
+				<div class="col-8">
+					<div class="card">
+						<div class="card-body">
+							<AbsenceForm @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-4">
+					<div v-if="isPending" class="text-center">
+						<Spinner></Spinner>
+					</div>
+					<organizational-chart :personnels="personnelsChart" :me="primary_personnel" v-else />
 				</div>
 			</div>
 			
@@ -55,6 +66,7 @@ import TeamInformationList from '../components/TeamInformationList.vue';
 import PeriodDropdown from '../components/PeriodDropdown.vue';
 import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
+import OrganizationalChart from '../components/OrganizationalChart.vue';
 
 export default {
 	name: 'Home',
@@ -71,7 +83,8 @@ export default {
 	},
 	
 	computed: {
-		...mapState(['absences','managers', 'personnelStats']),
+		...mapState(['openedPersonnelManagers', 'personnelStats']),
+
 		...mapGetters(['primary_personnel']),
 
 		/**
@@ -91,10 +104,32 @@ export default {
 		 */
 		displayMode() {
 			return this.chartMode ? 'chart' : 'table';
+		},
+
+		/**
+		 * Retourne la liste d'organigramme classé du plus au niveau au plus faible.
+		 * 
+		 * @return {Array}
+		 */
+		personnelsChart() {
+			let list = this.openedPersonnelManagers;
+			list.push(this.primary_personnel);
+
+			list.sort((a, b) => {
+				if (a.niveau_hierarchique > b.niveau_hierarchique) {
+					return 1;
+				}
+				else if (a.niveau_hierarchique < b.niveau_hierarchique) {
+					return -1;
+				}
+				return 0;
+			});
+
+			return list;
 		}
 	},
 
-	components: { AbsenceForm, PersonalInformationCard, TeamInformationList, PeriodDropdown, HeaderToolbar, Spinner },
+	components: { AbsenceForm, PersonalInformationCard, TeamInformationList, PeriodDropdown, HeaderToolbar, Spinner, OrganizationalChart },
 
 	methods: {
 
