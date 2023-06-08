@@ -11,17 +11,27 @@
 
         <div class="container">
 
-            <div class="my-3 d-flex align-items-center d-md-none lead text-secondary" v-if="openedElement">
+            <div class="mt-3 d-flex align-items-center d-md-none lead text-secondary" v-if="openedElement">
 				<span>{{openedElement.cache_nom}}</span>
 			</div>
 
             <div class="alert alert-danger" v-if="error">{{error}}</div>
                     
 
-            <div v-if="openedElement.primary === true" class="card my-3">
-                <div class="card-body">
-                    <AbsenceForm @add-absence="addAbsence" @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
+            <div class="row">
+
+                <div class="col my-3">
+                    <organizational-chart :me="primary_personnel" :personnels="personnelsChart" />
                 </div>
+
+                <div class="col-12 col-md-8 my-3" v-if="openedElement.primary === true">
+                    <div class="card">
+                        <div class="card-body">
+                            <AbsenceForm @add-absence="addAbsence" @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="card my-3">
                 <div class="card-body">
@@ -46,7 +56,7 @@
 
 <script>
 
-import {mapActions, mapState} from 'vuex';
+import {mapActions, mapGetters, mapState} from 'vuex';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import AbsenceForm from '../components/AbsenceForm.vue';
 import AlertMessage from '../components/pebble-ui/AlertMessage.vue';
@@ -55,6 +65,8 @@ import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
 import PeriodDropdown from '../components/PeriodDropdown.vue';
 import UserImage from '../components/pebble-ui/UserImage.vue';
 import sqlDateToIso from '../js/sqlDateToIso';
+import OrganizationalChart from '../components/OrganizationalChart.vue';
+import { organizationChart } from '../js/personnel';
 
 export default {
     data() {
@@ -72,10 +84,21 @@ export default {
     emits: ['refresh'],
     
     computed: {
-        ...mapState(['openedElement', 'openedPersonnelAbsences', 'personnelStats'])
+        ...mapState(['openedElement', 'openedPersonnelAbsences', 'personnelStats', 'openedPersonnelManagers']),
+
+        ...mapGetters(['primary_personnel']),
+
+        /**
+		 * Retourne la liste d'organigramme classé du plus au niveau au plus faible.
+		 * 
+		 * @return {Array}
+		 */
+        personnelsChart() {
+            return organizationChart(this.openedPersonnelManagers, this.openedElement);
+        }
     },
 
-    components: { Spinner, AbsenceForm, AlertMessage, AccordionMonth, HeaderToolbar, PeriodDropdown, UserImage },
+    components: { Spinner, AbsenceForm, AlertMessage, AccordionMonth, HeaderToolbar, PeriodDropdown, UserImage, OrganizationalChart },
 
     methods: {
 
@@ -155,7 +178,21 @@ export default {
                 df: period.period_end_date,
                 limit: 100
             });
-		}
+		},
+
+        /**
+         * Récupère la liste des managers disponibles pour le personnel en cours
+         */
+		loadManagers() {
+			this.pending.managers = true;
+
+            return this.$app.apiGet('structurePersonnel/GET/'+this.openedElement.id+'/nx')
+            .then((data) => {
+                this.setOpenedPersonnelManagers(data);
+            })
+            .catch(this.$app.catchError)
+			.finally(() => this.pending.managers = false);
+        }
 
     },
 

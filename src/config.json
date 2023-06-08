@@ -11,7 +11,7 @@
         "moduleLabel": "GTA Absence",
         "aside": true,
         "app_mode": "default",
-        "ppp": "partner",
+        "ppp": "private",
         "logos": null,
         "backAction": "/",
         "backNavigation": true

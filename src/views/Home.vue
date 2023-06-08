@@ -20,8 +20,16 @@
 			</div>
 		</HeaderToolbar>
 		<div class="container py-2" v-if="$store.state.login">
-			<div class="row mb-3">
-				<div class="col-8">
+			<div class="row">
+
+				<div class="col-12 col-md-4 my-3">
+					<div v-if="isPending" class="text-center">
+						<Spinner></Spinner>
+					</div>
+					<organizational-chart :personnels="personnelsChart" :me="primary_personnel" v-else />
+				</div>
+
+				<div class="col-12 col-md-8 my-3">
 					<div class="card">
 						<div class="card-body">
 							<AbsenceForm @absence-recorded="routeToAbsenceConfig"></AbsenceForm>
@@ -29,12 +37,6 @@
 					</div>
 				</div>
 
-				<div class="col-4">
-					<div v-if="isPending" class="text-center">
-						<Spinner></Spinner>
-					</div>
-					<organizational-chart :personnels="personnelsChart" :me="primary_personnel" v-else />
-				</div>
 			</div>
 			
 			<div v-if="isPending" class="text-center">
@@ -67,6 +69,7 @@ import PeriodDropdown from '../components/PeriodDropdown.vue';
 import HeaderToolbar from '../components/pebble-ui/toolbar/HeaderToolbar.vue';
 import Spinner from '../components/pebble-ui/Spinner.vue';
 import OrganizationalChart from '../components/OrganizationalChart.vue';
+import { organizationChart } from '../js/personnel';
 
 export default {
 	name: 'Home',
@@ -112,20 +115,7 @@ export default {
 		 * @return {Array}
 		 */
 		personnelsChart() {
-			let list = this.openedPersonnelManagers;
-			list.push(this.primary_personnel);
-
-			list.sort((a, b) => {
-				if (a.niveau_hierarchique > b.niveau_hierarchique) {
-					return 1;
-				}
-				else if (a.niveau_hierarchique < b.niveau_hierarchique) {
-					return -1;
-				}
-				return 0;
-			});
-
-			return list;
+			return organizationChart(this.openedPersonnelManagers, this.primary_personnel);
 		}
 	},
 

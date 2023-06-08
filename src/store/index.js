@@ -336,7 +336,6 @@ export default createStore({
 		unloadPersonnel(context) {
 			context.commit('close');
 			context.commit('openedPersonnelAbsences', { action: 'reset' });
-			context.commit('openedPersonnelManagers', { action: 'reset' });
 		},
 
 		/**

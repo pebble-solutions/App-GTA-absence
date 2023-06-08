@@ -9,7 +9,7 @@
 
             <div>
                 <div><strong>{{ personnel.cache_nom }}</strong></div>
-                <div v-if="n">{{ nLabel }}</div>
+                <div v-if="n > 0">{{ nLabel }}</div>
             </div>
 
         </div>
